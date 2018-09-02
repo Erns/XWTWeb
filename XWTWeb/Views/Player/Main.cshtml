@@ -1,53 +1,59 @@
-﻿@model IEnumerable < XWTWeb.Models.Player >
+﻿@model List<XWTWeb.Models.Player>
 @{
     ViewBag.Title = "Player Home";
 }
 
+@using (Html.BeginForm("Main", "Player", FormMethod.Post))
+{
+    //@Html.AntiForgeryToken()
 
-
-<div class="container">
-    <div class="row pl-0">
-        <div class="col-12 col-md-6 col-12 col-md-6 pl-0 pt-2 pb-2">
-            <h2>@ViewBag.Title</h2>
+    <div class="container">
+        <div class="row pl-0">
+            <div class="col-12 col-md-6 col-12 col-md-6 pl-0 pt-2 pb-2">
+                <h2>@ViewBag.Title</h2>
+            </div>
+            <div class="p-2 col d-flex justify-content-end align-content-center">
+                <button type="button" class="btn btn-success far fa-plus-square" style="font-size:xx-large" onclick="AddNewPlayer();"></button>
+            </div>
         </div>
-        <div class="p-2 col d-flex justify-content-end align-content-center">
-            <button type="button" class="btn btn-success far fa-plus-square" style="font-size:xx-large" onclick="AddNewPlayer();"></button>
+        <div class="row">
+            <table id="playerMainTable" class="table table-hover table-striped">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Delete</th>
+                        <th scope="col">Undo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr id="playerMainTableRowTemplate" style="display:none" data-rowtype="NewPlayer">
+                        <td><input type="text" class="col form-control form-control-sm" value="" placeholder="Name" data-valuetype="Name" /></td>
+                        <td><input type="text" class="col form-control form-control-sm" value="" placeholder="Email Address" data-valuetype="Email" /></td>
+                        <td><a href="#" title="Delete" style="font-weight:bold" class="btn btn-danger fas fa-trash-alt" onclick="RemovePrompt(this);"></a> </td>
+                        <td>&nbsp;</td>
+                    </tr>
+
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        <tr id="playerMainTableRow_@Model[i].Id">
+                            @*<td><input readonly type="text" class="col form-control form-control-sm" value="@Model[i].Name" placeholder="Name" data-valuetype="Name" data-originalvalue="@Model[i].Name" ondblclick="UnlockInput(this);" /></td>*@
+                            <td>@Html.LabelFor(model => Model[i].Name, htmlAttributes: new { @class = "control-label col-md-2" }) </td>
+                            <td><input readonly type="text" class="col form-control form-control-sm" value="@Model[i].Email" placeholder="Email Address" data-valuetype="Email" data-originalvalue="@Model[i].Email" ondblclick="UnlockInput(this);" /></td>
+                            <td><a href="#" title="Delete" style="font-weight:bold" class="btn btn-danger fas fa-trash-alt" onclick="RemovePrompt(this);"></a> </td>
+                            <td><a href="#" title="Undo" style="font-weight:bold" class="btn btn-warning fas fa-undo" onclick="UndoPrompt(@Model[i].Id);"></a> </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
-    </div>
-    <div class="row">
-        <table id="playerMainTable" class="table table-hover table-striped">
-            <thead class="thead-light">
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Delete</th>
-                    <th scope="col">Undo</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr id="playerMainTableRowTemplate" style="display:none" data-rowtype="NewPlayer">
-                    <td><input type="text" class="col form-control form-control-sm" value="" placeholder="Name" data-valuetype="Name" /></td>
-                    <td><input type="text" class="col form-control form-control-sm" value="" placeholder="Email Address" data-valuetype="Email"/></td>
-                    <td><a href="#" title="Delete" style="font-weight:bold" class="btn btn-danger fas fa-trash-alt" onclick="RemovePrompt(this);"></a> </td>
-                    <td>&nbsp;</td>
-                </tr>
 
-                @foreach (var item in Model)
-                {
-                <tr id="playerMainTableRow_@item.Id">
-                    <td><input readonly type="text" class="col form-control form-control-sm" value="@item.Name" placeholder="Name" data-valuetype="Name" data-originalvalue="@item.Name" ondblclick="UnlockInput(this);" /></td>
-                    <td><input readonly type="text" class="col form-control form-control-sm" value="@item.Email" placeholder="Email Address" data-valuetype="Email" data-originalvalue="@item.Email" ondblclick="UnlockInput(this);" /></td>
-                    <td><a href="#" title="Delete" style="font-weight:bold" class="btn btn-danger fas fa-trash-alt" onclick="RemovePrompt(this);"></a> </td>
-                    <td><a href="#" title="Undo" style="font-weight:bold" class="btn btn-warning fas fa-undo" onclick="UndoPrompt(@item.Id);"></a> </td>
-                </tr>
-                }
-            </tbody>
-        </table>
+        <input type="submit" class="btn btn-primary" value="Submit" />
     </div>
-    
-</div>
 
+}
 <script type="text/javascript">
+
     var intNewPlayerCount = 0;
     function AddNewPlayer() {
         var rowTemplate = $("#playerMainTableRowTemplate").clone();

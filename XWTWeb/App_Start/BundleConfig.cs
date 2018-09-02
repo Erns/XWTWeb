@@ -25,7 +25,6 @@ namespace XWTWeb
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap-spacelab.css",
-                      "~/Content/FontAwesome/css/all.css",
                       "~/Content/site.css"));
         }
     }
