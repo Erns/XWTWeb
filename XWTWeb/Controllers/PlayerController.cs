@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -47,12 +48,14 @@ namespace XWTWeb.Controllers
         }
 
 
-        [HttpPost]
-        public ActionResult Main(List<Player> players)
+        public void UpdatePlayerData(string players)
         {
+            List<Player> result = JsonConvert.DeserializeObject<List<Player>>(players);
 
+            //var model = new JavaScriptSerializer().Deserialize<Player>(players);
 
-            return View(players);
+            var test = "";
+            
         }
 
     }
