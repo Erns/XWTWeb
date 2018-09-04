@@ -10,7 +10,7 @@
             <h2>@ViewBag.Title</h2>
         </div>
         <div class="p-2 col d-flex justify-content-end align-content-center">
-            <button type="button" class="btn btn-success far fa-plus-square" style="font-size:xx-large" onclick="AddNewPlayer();"></button>
+            <button type="button" class="btn btn-outline-success fas fa-plus-square" style="font-size:xx-large" onclick="AddNewPlayer();"></button>
         </div>
     </div>
     <div class="row">
@@ -19,37 +19,43 @@
                 <tr>
                     <th scope="col">Name</th>
                     <th scope="col">Email</th>
-                    <th scope="col">Delete</th>
-                    <th scope="col">Undo</th>
+                    <th scope="col">Group</th>
+                    <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr id="playerMainTableRowTemplate" style="display:none" data-rowtype="NewPlayer">
-                    <td><input type="text" class="col form-control form-control-sm" value="" placeholder="Name" data-valuetype="Name" /></td>
+                    <td><input type="text" class="required col form-control form-control-sm" value="" placeholder="Name" data-valuetype="Name" onfocus="$(this).popover('dispose');" /></td>
                     <td><input type="text" class="col form-control form-control-sm" value="" placeholder="Email Address" data-valuetype="Email" /></td>
+                    <td><input type="text" class="col form-control form-control-sm" value="" placeholder="Group" data-valuetype="Group" /></td>
                     <td><a href="#" title="Delete" style="font-weight:bold" class="btn btn-danger fas fa-trash-alt" onclick="RemovePrompt(this);"></a> </td>
-                    <td>&nbsp;</td>
                 </tr>
 
                 @foreach (XWTWeb.Models.Player player in Model)
                 {
-                    <tr id="playerMainTableRow_@player.Id" data-playerid="@player.Id">
-                        <td><input readonly id="playerMainTableRowName_@player.Id" type="text" class="col form-control form-control-sm" value="@player.Name" placeholder="Name" data-valuetype="Name" data-originalvalue="@player.Name" ondblclick="UnlockInput(this);" /></td>
-                        <td><input readonly id="playerMainTableRowEmail_@player.Id" type="text" class="col form-control form-control-sm" value="@player.Email" placeholder="Email Address" data-valuetype="Email" data-originalvalue="@player.Email" ondblclick="UnlockInput(this);" /></td>
-                        <td><a href="#" title="Delete" style="font-weight:bold" class="btn btn-danger fas fa-trash-alt" onclick="RemovePrompt(this);"></a> </td>
-                        <td><a href="#" title="Undo" style="font-weight:bold" class="btn btn-warning fas fa-undo" onclick="UndoPrompt(@player.Id);"></a> </td>
-                    </tr>
+                <tr readonly id="playerMainTableRow_@player.Id" data-playerid="@player.Id">
+                    <td><input readonly id="playerMainTableRowName_@player.Id" type="text" class="required col form-control form-control-sm" value="@player.Name" placeholder="Name" data-valuetype="Name" data-originalvalue="@player.Name" ondblclick="UnlockInput(this);" onfocus="$(this).popover('dispose');" /></td>
+                    <td><input readonly id="playerMainTableRowEmail_@player.Id" type="text" class="col form-control form-control-sm" value="@player.Email" placeholder="Email Address" data-valuetype="Email" data-originalvalue="@player.Email" ondblclick="UnlockInput(this);" /></td>
+                    <td><input readonly id="playerMainTableRowGroup_@player.Id" type="text" class="col form-control form-control-sm" value="@player.Group" placeholder="Group" data-valuetype="Group" data-originalvalue="@player.Group" ondblclick="UnlockInput(this);" /></td>
+                    <td>
+                        <a href="#" title="Delete" style="font-weight:bold" class="btn btn-danger fas fa-trash-alt" onclick="RemovePrompt(this);"></a>
+                        <a href="#" title="Undo" style="font-weight:bold" class="btn btn-warning fas fa-undo" onclick="UndoPrompt(@player.Id);"></a>
+                    </td>
+                </tr>
                 }
             </tbody>
         </table>
     </div>
 
     @*<input type="submit" class="btn btn-primary" value="Submit" />*@
-    <button type="button" class="btn btn-primary" onclick="UpdatePlayer();">Testing</button>
+    <div class="row d-flex justify-content-end align-content-center">
+        <button type="button" class="btn btn-success far fa-save" style="font-size:xx-large" onclick="UpdatePlayer();"></button>
+    </div>
 </div>
 
 <script type="text/javascript">
 
+    //Add new player row
     var intNewPlayerCount = 0;
     function AddNewPlayer() {
         var rowTemplate = $("#playerMainTableRowTemplate").clone();
@@ -61,16 +67,21 @@
         intNewPlayerCount++;
     }
 
+    //Delete player
     function RemovePrompt(btn) {
         bootbox.confirm({
             size: "small",
             message: "Are you sure you want to remove this player?",
             callback: function (result) {
-                if (result) $(btn).parent().parent().remove();
+                if (result) {
+                    $(btn).parent().parent().remove();
+                    $('.popover').remove();
+                }
             }
         });
     }
 
+    //Undo changes made
     function UndoPrompt(Id) {
         bootbox.confirm({
             size: "small",
@@ -80,15 +91,18 @@
                     $("#playerMainTableRow_" + Id + " td input").each(function () {
                         $(this).val($(this).data('originalvalue'));
                         $(this).prop('readonly', true);
+                        $(this).parent().parent().prop('readonly', true).attr('readonly', true);
                     });
                 }
             }
         });
     }
 
+    //Unlock field to edit
     function UnlockInput(inpt) {
         if ($(inpt).prop('readonly')) {
             $(inpt).prop('readonly', false);
+            $(inpt).parent().parent().prop('readonly', false).attr('readonly', false);
             $(inpt)[0].focus();
         }
     }
@@ -97,28 +111,48 @@
         var jsonData = [];
         var playerId;
 
+        //Pull info from edited Players
         $("tr[id^=playerMainTableRow_]").each(function () {
-            playerId = $(this).data('playerid');
+            if (!$(this).attr('readonly') && !$(this).prop('readonly')) {
+                playerId = $(this).data('playerid');
+                var player = {
+                    Id: playerId,
+                    Name: $("#playerMainTableRowName_" + playerId).val(),
+                    Email: $("#playerMainTableRowEmail_" + playerId).val(),
+                    Group: $("#playerMainTableRowGroup_" + playerId).val(),
+                    Active: true
+                };
+                jsonData.push(player);
+            }
+        });
+
+        //Pull info for new Players
+        $("tr[id^=newPlayerRow_]").each(function () {
             var player = {
-                Id: playerId,
-                Name: $("#playerMainTableRowName_" + playerId).val(),
-                Group: '',
-                Email: $("#playerMainTableRowEmail_" + playerId).val(),
+                Id: 0,
+                Name: $(this).find("input[data-valuetype='Name']").val(),
+                Email: $(this).find("input[data-valuetype='Email']").val(),
+                Group: $(this).find("input[data-valuetype='Group']").val(),
                 Active: true
             };
             jsonData.push(player);
         });
 
-        $.ajax({
-            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-            dataType: "json",
-            type: "POST",
-            url: "/Player/UpdatePlayerData",
-            data: { players: JSON.stringify(jsonData) },
-            success: function (data) {
 
-            }
-        });
+        if (CheckRequiredFields()) {
+            //Update player info
+            $.ajax({
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                dataType: "json",
+                type: "POST",
+                url: "/Player/UpdatePlayerData",
+                data: { players: JSON.stringify(jsonData) },
+                complete: function (data) {
+                    location.reload();
+                }
+            });
+        }
+
 
     }
 

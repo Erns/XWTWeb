@@ -15,11 +15,12 @@ namespace XWTWeb.Models
         public string Email { get; set; }
         public bool Active { get; set; } = true;
 
-        public Player(int Id, string Name, string Email = "")
+        public Player(int Id, string Name, string Email = "", string Group = "")
         {
             this.Id = Id;
             this.Name = Name;
             this.Email = Email;
+            this.Group = Group;
         }
     }
 }

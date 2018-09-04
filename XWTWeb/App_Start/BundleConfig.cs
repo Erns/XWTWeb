@@ -21,7 +21,8 @@ namespace XWTWeb
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.bundle.js",
-                      "~/Scripts/bootbox.min.js"));
+                      "~/Scripts/bootbox.min.js",
+                      "~/Scripts/utilities.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap-spacelab.css",
