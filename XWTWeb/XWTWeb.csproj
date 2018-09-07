@@ -46,6 +46,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="RestSharp, Version=106.3.1.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.106.3.1\lib\net452\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -186,8 +189,6 @@
     <Content Include="Content\FontAwesome\webfonts\fa-solid-900.ttf" />
     <Content Include="Content\FontAwesome\webfonts\fa-solid-900.woff" />
     <Content Include="Content\FontAwesome\webfonts\fa-solid-900.woff2" />
-    <None Include="Properties\PublishProfiles\xwtweb - FTP.pubxml" />
-    <None Include="Properties\PublishProfiles\xwtweb - Web Deploy.pubxml" />
     <Content Include="Scripts\bootbox.min.js" />
     <Content Include="Scripts\bootstrap.bundle.js.map" />
     <Content Include="Scripts\bootstrap.bundle.min.js.map" />
@@ -224,6 +225,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

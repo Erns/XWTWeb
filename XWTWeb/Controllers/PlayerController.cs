@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
+using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -12,44 +14,36 @@ namespace XWTWeb.Controllers
 {
     public class PlayerController : Controller
     {
+        RestClient client = new RestClient(ConfigurationManager.AppSettings["XWTWebAPIAddress"].ToString());
+        // client.Authenticator = new HttpBasicAuthenticator(username, password);
 
         public ActionResult Main()
         {
             List<Player> players = new List<Player>();
 
+
             try
             {
-                //using (SqlConnection sqlConn = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["XWTWebConnectionString"].ToString()))
-                //{
-                //    using (SqlCommand sqlCmd = new SqlCommand("dbo.spPlayers_GET", sqlConn))
-                //    {
-                //        sqlConn.Open();
-                //        sqlCmd.CommandType = System.Data.CommandType.StoredProcedure;
-                //        sqlCmd.Parameters.AddWithValue("@UserAccountId", 0);
-                //        using (SqlDataReader sqlReader = sqlCmd.ExecuteReader())
-                //        {
-                //            while (sqlReader.Read())
-                //            {
-                //                players.Add(new Player(
-                //                    sqlReader.GetInt32(sqlReader.GetOrdinal("Id"))
-                //                    , sqlReader.GetString(sqlReader.GetOrdinal("Name"))
-                //                    , sqlReader.GetString(sqlReader.GetOrdinal("Email"))));
-                //            }
-                //        }
-                //    }
-                //}
 
-                players.Add(new Player(1, "Test 1", ""));
-                players.Add(new Player(2, "test 2", "asdf@asdf.com"));
-                players.Add(new Player(3, "test 3","", "Sparta"));
+                // client.Authenticator = new HttpBasicAuthenticator(username, password);
 
+                var request = new RestRequest("Players/{id}", Method.GET);
+                request.AddUrlSegment("id", 0);
+
+                // execute the request
+                IRestResponse response = client.Execute(request);
+                var content = response.Content;
+
+                List<Player> result = JsonConvert.DeserializeObject<List<Player>>(JsonConvert.DeserializeObject(content).ToString());
+                foreach (Player player in result)
+                {
+                    players.Add(new Player(player.Id, player.Name, player.Email, player.Group));
+                }
             }
             catch (Exception ex)
             {
                 Console.Write(string.Format("PlayerController.Main{0}Error:{1}", Environment.NewLine, ex.Message));
             }
-
-
 
             ViewBag.Whatever = "Your player home page, whatever.";
 
@@ -61,36 +55,22 @@ namespace XWTWeb.Controllers
         {
             List<Player> result = JsonConvert.DeserializeObject<List<Player>>(players);
 
-            //var model = new JavaScriptSerializer().Deserialize<Player>(players);
-
-            DataTable dt = new DataTable();
-            dt.Columns.Add("Id", typeof(int));
-            dt.Columns.Add("Name", typeof(string));
-            dt.Columns.Add("Group", typeof(string));
-            dt.Columns.Add("Email", typeof(string));
-            dt.Columns.Add("Active", typeof(bool));
-
-            foreach (Player player in result)
-            {
-                dt.Rows.Add(player.Id, player.Name, player.Group, player.Email, player.Active);
-            }
-
 
             try
             {
-                //using (SqlConnection sqlConn = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["XWTWebConnectionString"].ToString()))
-                //{
-                //    using (SqlCommand sqlCmd = new SqlCommand("dbo.spPlayers_UPDATEINSERT_ALL", sqlConn))
-                //    {
-                //        sqlConn.Open();
-                //        sqlCmd.CommandType = System.Data.CommandType.StoredProcedure;
-                //        sqlCmd.Parameters.AddWithValue("@UserAccountId", 0);
 
-                //        //or-- sqlCmd.Parameters.Add("@dt", SqlDbType.Structured).Value = dt;
-                //        sqlCmd.ExecuteNonQuery();
+                // client.Authenticator = new HttpBasicAuthenticator(username, password);
 
-                //    }
-                //}
+                var request = new RestRequest("Players/{id}", Method.PUT);
+                //
+                request.AddUrlSegment("id", 0);
+                request.AddJsonBody(JsonConvert.SerializeObject(result));
+
+                // execute the request
+                IRestResponse response = client.Execute(request);
+                var content = response.Content; // raw content as string
+
+
             }
             catch (Exception ex)
             {
@@ -98,7 +78,6 @@ namespace XWTWeb.Controllers
             }
 
 
-            var test = "";
             return;
             
         }
