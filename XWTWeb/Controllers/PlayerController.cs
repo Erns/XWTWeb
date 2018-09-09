@@ -12,6 +12,7 @@ using XWTWeb.Models;
 
 namespace XWTWeb.Controllers
 {
+    [RequireHttps]
     [Authorize]
     public class PlayerController : Controller
     {

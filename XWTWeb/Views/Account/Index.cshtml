@@ -3,12 +3,37 @@
     ViewBag.Title = "Index";
 }
 
+<div class="container jumbotron mt-2 pt-3">
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <div class="row p-2">
+                <label class="col-12 font-weight-bold" style="font-size:x-large">Login</label>
+                <input type="text" class="col-12 form-control m-1" style="max-width:250px;" placeholder="User Name" />
+                <div class="w-100"></div>
+                <input type="password" class="col-12 form-control m-1" style="max-width:250px;" placeholder="Password" />
+                <div class="w-100"></div>
+                <button type="submit" class="btn btn-warning ml-5" onclick="LoginOnClick();">Login</button>
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-    <button type="submit" class="btn btn-warning" onclick="LoginOnClick();">Login</button>
+            </div>
+        </div>
+
+
+        <div class="col-12 col-md-6">
+            <div class="row p-2">
+                <label class="col-12 font-weight-bold" style="font-size:x-large">Register</label>
+                <input type="text" class="col-12 form-control m-1" style="max-width:250px;" placeholder="User Name" />
+                <div class="w-100"></div>
+                <input type="email" class="col-12 form-control m-1" style="max-width:250px;" placeholder="Email" />
+                <div class="w-100"></div>
+                <input type="password" class="col-12 form-control m-1" style="max-width:250px;" placeholder="Password" />
+                <div class="w-100"></div>
+                <input type="password" class="col-12 form-control m-1" style="max-width:250px;" placeholder="Re-Enter Password" />
+                <div class="w-100"></div>
+                <button type="submit" class="btn btn-warning ml-5" onclick="LoginOnClick();">Register</button>
+            </div>
+        </div>
+
+    </div>
 </div>
 
 
