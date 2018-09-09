@@ -12,6 +12,7 @@ using XWTWeb.Models;
 
 namespace XWTWeb.Controllers
 {
+    [Authorize]
     public class PlayerController : Controller
     {
         RestClient client = new RestClient(ConfigurationManager.AppSettings["XWTWebAPIAddress"].ToString());

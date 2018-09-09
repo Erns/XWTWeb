@@ -16,16 +16,20 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 @Html.ActionLink("XWing Tournament", "Main", "Player", new { area = "" }, new { @class = "navbar-brand" })
+
             </div>
-            <div class="navbar-collapse collapse">
+
+            <div class="navbar-collapse collapse pl-3">
                 <ul class="navbar-nav mr-auto">
-                    @*<li class="nav-item">@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li class="nav-item">@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li class="nav-item">@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>*@
                     <li class="nav-item">@Html.ActionLink("Players", "Main", "Player", new { area = "" }, new { @class = "nav-link" })</li>
                     <li class="nav-item">@Html.ActionLink("Tournaments", "Main", "Tournament", new { area = "" }, new { @class = "nav-link" })</li>
                 </ul>
             </div>
+
+            <div class="p-2 col d-flex justify-content-end align-content-start">
+                <button type="button" class="btn btn-secondary fas fa-sign-out-alt" onclick="LogoutOnClick();"></button>
+            </div>
+
         </div>
     </nav>
     <div class="container body-content">
@@ -45,6 +49,32 @@
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
         });
+
+        function LoginOnClick() {
+            $.ajax({
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                dataType: "json",
+                type: "POST",
+                url: "/Account/Index",
+                complete: function (data) {
+                    location.replace(data.responseJSON);
+                }
+            });
+            return false;
+        }
+
+        function LogoutOnClick() {
+            $.ajax({
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                dataType: "json",
+                type: "POST",
+                url: "/Account/Logout",
+                complete: function (data) {
+                    location.reload();
+                }
+            });
+        }
+
     </script>
 </body>
 </html>

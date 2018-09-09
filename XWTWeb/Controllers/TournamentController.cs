@@ -7,6 +7,7 @@ using XWTWeb.Models;
 
 namespace XWTWeb.Controllers
 {
+    [Authorize]
     public class TournamentController : Controller
     {
         // GET: Tournament
