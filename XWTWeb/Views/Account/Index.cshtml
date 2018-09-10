@@ -1,39 +1,59 @@
-﻿
-@{
-    ViewBag.Title = "Index";
+﻿@model XWTWeb.Models.UserAccount
+
+@using (Html.BeginForm("Index", "Account", FormMethod.Post))
+{
+    <div class="container jumbotron mt-2 pt-3">
+        <div class="row">
+            <div class="col-12 col-md-3">
+                <div class="row p-2">
+                    <label class="col-12 font-weight-bold" style="font-size:x-large">Login</label>
+                    @Html.TextBoxFor(model => model.UserName, new { @class = "col-12 form-control m-1", @placeholder = "User Name" })
+                    <div class="w-100"></div>
+                    @Html.PasswordFor(model => model.Password, new { @class = "col-12 form-control m-1", @placeholder = "Password" })
+                    <div class="w-100"></div>
+                    <button type="submit" class="btn btn-primary col">Login</button>
+                    @if (Model.LoginFails > 0)
+                    {
+                        <div class="w-100"></div>
+                        <label class="text-danger col d-flex justify-content-center pt-3">Login failed</label>
+                    }
+                </div>
+            </div>
+            <div class="d-none d-md-block col-md-6"></div>
+
+            <div class="col-12 col-md-3">
+                <div class="row p-2">
+                    <label class="col-12 font-weight-bold" style="font-size:x-large">Register</label>
+                    <input type="text" class="col-12 form-control m-1" style="max-width:250px;" placeholder="User Name" />
+                    <div class="w-100"></div>
+                    <input type="email" class="col-12 form-control m-1" style="max-width:250px;" placeholder="Email" />
+                    <div class="w-100"></div>
+                    <input type="password" class="col-12 form-control m-1" style="max-width:250px;" placeholder="Password" />
+                    <div class="w-100"></div>
+                    <input type="password" class="col-12 form-control m-1" placeholder="Re-Enter Password" />
+                    <div class="w-100"></div>
+                    <button type="submit" class="btn btn-secondary col" onclick="LoginOnClick();">Register</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
 }
 
-<div class="container jumbotron mt-2 pt-3">
-    <div class="row">
-        <div class="col-12 col-md-6">
-            <div class="row p-2">
-                <label class="col-12 font-weight-bold" style="font-size:x-large">Login</label>
-                <input type="text" class="col-12 form-control m-1" style="max-width:250px;" placeholder="User Name" />
-                <div class="w-100"></div>
-                <input type="password" class="col-12 form-control m-1" style="max-width:250px;" placeholder="Password" />
-                <div class="w-100"></div>
-                <button type="submit" class="btn btn-warning ml-5" onclick="LoginOnClick();">Login</button>
 
-            </div>
-        </div>
+    <script type="text/javascript">
 
-
-        <div class="col-12 col-md-6">
-            <div class="row p-2">
-                <label class="col-12 font-weight-bold" style="font-size:x-large">Register</label>
-                <input type="text" class="col-12 form-control m-1" style="max-width:250px;" placeholder="User Name" />
-                <div class="w-100"></div>
-                <input type="email" class="col-12 form-control m-1" style="max-width:250px;" placeholder="Email" />
-                <div class="w-100"></div>
-                <input type="password" class="col-12 form-control m-1" style="max-width:250px;" placeholder="Password" />
-                <div class="w-100"></div>
-                <input type="password" class="col-12 form-control m-1" style="max-width:250px;" placeholder="Re-Enter Password" />
-                <div class="w-100"></div>
-                <button type="submit" class="btn btn-warning ml-5" onclick="LoginOnClick();">Register</button>
-            </div>
-        </div>
-
-    </div>
-</div>
+    function RegisterOnClick() {
+        $.ajax({
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            dataType: "json",
+            type: "POST",
+            url: "/Account/Index",
+            complete: function (data) {
+                location.replace(data.responseJSON);
+            }
+        });
+    }
+    </script>
 
 

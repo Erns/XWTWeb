@@ -1,4 +1,5 @@
-﻿using SendGrid;
+﻿using Newtonsoft.Json;
+using SendGrid;
 using SendGrid.Helpers.Mail;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
-using XWTWeb.App_Start;
+using XWTWeb.Models;
 
 namespace XWTWeb.Controllers
 {
@@ -16,15 +17,22 @@ namespace XWTWeb.Controllers
         // GET: Account
         public ActionResult Index()
         {
-            return View();
+            return View(new UserAccount());
         }
 
 
         [HttpPost]
-        public ActionResult Index(string i)
+        public ActionResult Index(UserAccount user)
         {
+            if (string.IsNullOrEmpty(user.UserName) || string.IsNullOrEmpty(user.Password))
+            {
+                user.LoginFails++;
+                return View(user);
+            }
 
-            FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(1, "userName", DateTime.Now, DateTime.Now.AddDays(7), false, "userData", FormsAuthentication.FormsCookiePath);
+
+            user.Password = "";
+            FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(1, user.UserName, DateTime.Now, DateTime.Now.AddDays(7), false, JsonConvert.SerializeObject(user), FormsAuthentication.FormsCookiePath);
             string hashCookies = FormsAuthentication.Encrypt(ticket);
             HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, hashCookies)
             {
@@ -33,7 +41,8 @@ namespace XWTWeb.Controllers
             };
 
             System.Web.HttpContext.Current.Response.Cookies.Add(cookie);
-            return Json(Url.Action("Main", "Player"));
+            //return Json(Url.Action("Main", "Player"));
+            return RedirectToAction("Main", "Player");
         }
 
         //private async System.Threading.Tasks.Task TestEmailAsync()
@@ -53,7 +62,16 @@ namespace XWTWeb.Controllers
         [HttpPost]
         public void Logout()
         {
+            // Delete the user details from cache.
+            //session.Abandon();
+
+            // Delete the authentication ticket and sign out.
             FormsAuthentication.SignOut();
+
+            // Clear authentication cookie.
+            HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, "");
+            cookie.Expires = DateTime.Now.AddYears(-1);
+            System.Web.HttpContext.Current.Response.Cookies.Add(cookie);
         }
 
     }

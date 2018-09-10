@@ -50,19 +50,6 @@
             $('[data-toggle="tooltip"]').tooltip();
         });
 
-        function LoginOnClick() {
-            $.ajax({
-                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-                dataType: "json",
-                type: "POST",
-                url: "/Account/Index",
-                complete: function (data) {
-                    location.replace(data.responseJSON);
-                }
-            });
-            return false;
-        }
-
         function LogoutOnClick() {
             $.ajax({
                 contentType: 'application/x-www-form-urlencoded; charset=UTF-8',

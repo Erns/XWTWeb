@@ -23,10 +23,9 @@ namespace XWTWeb.Controllers
         {
             List<Player> players = new List<Player>();
 
-
             try
             {
-
+                
                 // client.Authenticator = new HttpBasicAuthenticator(username, password);
 
                 var request = new RestRequest("Players/{id}", Method.GET);
@@ -64,14 +63,12 @@ namespace XWTWeb.Controllers
                 // client.Authenticator = new HttpBasicAuthenticator(username, password);
 
                 var request = new RestRequest("Players/{id}", Method.PUT);
-                //
                 request.AddUrlSegment("id", 0);
                 request.AddJsonBody(JsonConvert.SerializeObject(result));
 
                 // execute the request
                 IRestResponse response = client.Execute(request);
                 var content = response.Content; // raw content as string
-
 
             }
             catch (Exception ex)
