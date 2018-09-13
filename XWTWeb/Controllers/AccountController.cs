@@ -21,22 +21,23 @@ namespace XWTWeb.Controllers
         // GET: Account
         public ActionResult Index()
         {
-            return View(new UserAccount());
+            return View(new LoginPage());
         }
 
 
         [HttpPost]
-        public ActionResult Index(UserAccount user)
+        public ActionResult Index(LoginPage user)
         {
-            if (string.IsNullOrEmpty(user.UserName) || string.IsNullOrEmpty(user.Password))
+
+            if (string.IsNullOrEmpty(user.LoginUser.UserName) || string.IsNullOrEmpty(user.LoginUser.Password))
             {
-                user.LoginFails++;
+                user.LoginUser.LoginFails++;
                 return View(user);
             }
 
 
-            user.Password = "";
-            FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(1, user.UserName, DateTime.Now, DateTime.Now.AddDays(7), false, JsonConvert.SerializeObject(user), FormsAuthentication.FormsCookiePath);
+            user.LoginUser.Password = "";
+            FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(1, user.LoginUser.UserName, DateTime.Now, DateTime.Now.AddDays(7), false, JsonConvert.SerializeObject(user), FormsAuthentication.FormsCookiePath);
             string hashCookies = FormsAuthentication.Encrypt(ticket);
             System.Web.HttpCookie cookie = new System.Web.HttpCookie(FormsAuthentication.FormsCookieName, hashCookies)
             {

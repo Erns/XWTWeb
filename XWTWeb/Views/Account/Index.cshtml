@@ -1,4 +1,4 @@
-﻿@model XWTWeb.Models.UserAccount
+﻿@model XWTWeb.Models.LoginPage
 
 @using (Html.BeginForm("Index", "Account", FormMethod.Post))
 {
@@ -7,32 +7,33 @@
             <div class="col-12 col-md-3">
                 <div class="row p-2">
                     <label class="col-12 font-weight-bold" style="font-size:x-large">Login</label>
-                    @Html.TextBoxFor(model => model.UserName, new { @class = "col-12 form-control m-1", @placeholder = "User Name" })
+                    @Html.TextBoxFor(model => model.LoginUser.UserName, new { @class = "col-12 form-control m-1", @placeholder = "User Name" })
                     <div class="w-100"></div>
-                    @Html.PasswordFor(model => model.Password, new { @class = "col-12 form-control m-1", @placeholder = "Password" })
+                    @Html.PasswordFor(model => model.LoginUser.Password, new { @class = "col-12 form-control m-1", @placeholder = "Password" })
                     <div class="w-100"></div>
                     <button type="submit" class="btn btn-primary col">Login</button>
-                    @if (Model.LoginFails > 0)
+                    @if (Model.LoginUser.LoginFails > 0)
                     {
                         <div class="w-100"></div>
                         <label class="text-danger col d-flex justify-content-center pt-3">Login failed</label>
                     }
                 </div>
             </div>
+
             <div class="d-none d-md-block col-md-6"></div>
 
             <div class="col-12 col-md-3">
                 <div class="row p-2">
                     <label class="col-12 font-weight-bold" style="font-size:x-large">Register</label>
-                    <input id="RegisterUserName" type="text" class="col-12 form-control m-1" style="max-width:250px;" placeholder="User Name" />
+                    @Html.TextBoxFor(model => model.RegisterUser.UserName, new { @class = "col-12 form-control m-1", @placeholder = "User Name" })
                     <div class="w-100"></div>
-                    <input id="RegisterEmail" type="email" class="col-12 form-control m-1" style="max-width:250px;" placeholder="Email" />
+                    @Html.TextBoxFor(model => model.RegisterUser.Email, new { @type = "email", @class = "col-12 form-control m-1", @placeholder = "Email" })
                     <div class="w-100"></div>
-                    <input id="RegisterPassword" type="password" class="col-12 form-control m-1" style="max-width:250px;" placeholder="Password" />
+                    @Html.PasswordFor(model => model.RegisterUser.Password, new { @class = "col-12 form-control m-1", @placeholder = "Password" })
                     <div class="w-100"></div>
-                    <input id="RegisterPasswordVerify" type="password" class="col-12 form-control m-1" placeholder="Re-Enter Password" />
+                    <input id="RegisterUser_PasswordVerify" type="password" class="col-12 form-control m-1" placeholder="Re-Enter Password" />
                     <div class="w-100"></div>
-                    <button type="button" class="btn btn-secondary col" onclick="RegisterOnClick();">Register</button>
+                    <button type="submit" class="btn btn-secondary col" onclick="RegisterOnClick();">Register</button>
                 </div>
             </div>
 
@@ -44,47 +45,23 @@
     <script type="text/javascript">
 
         function RegisterOnClick() {
-            if ($("#RegisterPassword").val() != $("#RegisterPasswordVerify").val()) {
+            if ($("#RegisterUser_Password").val() != $("#RegisterUser_PasswordVerify").val()) {
                 bootbox.alert("The passwords entered do not match.");
-                $("#RegisterPassword").val('');
-                $("#RegisterPasswordVerify").val('');
+                $("#RegisterUser_Password").val('');
+                $("#RegisterUser_PasswordVerify").val('');
                 return false;
             }
 
-            if ($("#RegisterUserName").val() == '' || $("#RegisterEmail").val() == '' || $("#RegisterPassword").val() == '') {
+            if ($("#RegisterUser_Password").val() == '' || $("#RegisterUser_Email").val() == '' || $("#RegisterUser_PasswordVerify").val() == '') {
                 bootbox.alert("Please enter values into all Registration fields before proceeding.");
-                $("#RegisterPassword").val('');
-                $("#RegisterPasswordVerify").val('');
+                $("#RegisterUser_Password").val('');
+                $("#RegisterUser_PasswordVerify").val('');
+
                 return false;
+
             }
+        }
 
-            var jsonData = {
-                userName: $("#RegisterUserName").val(),
-                password: $("#RegisterPassword").val(),
-                email: $("#RegisterEmail").val()
-            };
-
-            @*debugger
-            //url: "/Account/RegisterUserAccount",
-            $.ajax({
-                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-                dataType: "json",
-                type: "POST", 
-                cache: false,
-                url: "@Url.Action("RegisterUserAccount", "Utilities")",
-                data: { loginInfo: JSON.stringify(jsonData) },
-                success: function (response) {
-                    alert('success: '+ response.responseText);
-                },
-                failure: function (response) {
-                    alert('failure: ' + response.responseText);
-                },
-                error: function (response) {
-                    debugger
-                    alert('error: ' + response.responseText);
-                }
-            });*@
-    }
     </script>
 
 
