@@ -1,8 +1,10 @@
 ﻿using Newtonsoft.Json;
+using RestSharp;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -14,6 +16,8 @@ namespace XWTWeb.Controllers
     [RequireHttps]
     public class AccountController : Controller
     {
+        RestClient client = new RestClient(ConfigurationManager.AppSettings["XWTWebAPIAddress"].ToString());
+
         // GET: Account
         public ActionResult Index()
         {
@@ -34,7 +38,7 @@ namespace XWTWeb.Controllers
             user.Password = "";
             FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(1, user.UserName, DateTime.Now, DateTime.Now.AddDays(7), false, JsonConvert.SerializeObject(user), FormsAuthentication.FormsCookiePath);
             string hashCookies = FormsAuthentication.Encrypt(ticket);
-            HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, hashCookies)
+            System.Web.HttpCookie cookie = new System.Web.HttpCookie(FormsAuthentication.FormsCookieName, hashCookies)
             {
                 HttpOnly = true,
                 Expires = ticket.Expiration
@@ -69,9 +73,39 @@ namespace XWTWeb.Controllers
             FormsAuthentication.SignOut();
 
             // Clear authentication cookie.
-            HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, "");
+            System.Web.HttpCookie cookie = new System.Web.HttpCookie(FormsAuthentication.FormsCookieName, "");
             cookie.Expires = DateTime.Now.AddYears(-1);
             System.Web.HttpContext.Current.Response.Cookies.Add(cookie);
+        }
+
+        public void RegisterUserAccount(string loginInfo)
+        {
+            var result = JsonConvert.DeserializeObject(loginInfo);
+
+            try
+            {
+
+                UserAccount user = new UserAccount();
+
+
+                // client.Authenticator = new HttpBasicAuthenticator(username, password);
+
+                //var request = new RestRequest("UserAccount/{id}", Method.POST);
+                //request.AddUrlSegment("id", 0);
+                //request.AddJsonBody(JsonConvert.SerializeObject(result));
+
+                //// execute the request
+                //IRestResponse response = client.Execute(request);
+                //var content = response.Content; // raw content as string
+
+            }
+            catch (Exception ex)
+            {
+                Console.Write(string.Format("AccountController.RegisterUserAccount{0}Error:{1}", Environment.NewLine, ex.Message));
+            }
+
+
+            return;
         }
 
     }
