@@ -11,12 +11,12 @@
                     <div class="w-100"></div>
                     @Html.PasswordFor(model => model.LoginUser.Password, new { @class = "col-12 form-control m-1", @placeholder = "Password" })
                     <div class="w-100"></div>
-                    <button type="submit" class="btn btn-primary col">Login</button>
-                    @if (Model.LoginUser.LoginFails > 0)
+                    <button type="submit" class="btn btn-primary col" onclick="LoginOnClick();">Login</button>
+                    @*@if (Model.LoginUser.LoginFails > 0)
                     {
                         <div class="w-100"></div>
                         <label class="text-danger col d-flex justify-content-center pt-3">Login failed</label>
-                    }
+                    }*@
                 </div>
             </div>
 
@@ -37,6 +37,7 @@
                 </div>
             </div>
 
+            <input type="hidden" id="submitCommand" name="submitCommand" value="" />
         </div>
     </div>
 }
@@ -44,7 +45,17 @@
 
     <script type="text/javascript">
 
+        $(document).ready(function () {
+            $("#submitCommand").val('');
+        });
+
+        function LoginOnClick() {
+            $("#submitCommand").val('Login');
+        }
+
         function RegisterOnClick() {
+            $("#submitCommand").val('');
+
             if ($("#RegisterUser_Password").val() != $("#RegisterUser_PasswordVerify").val()) {
                 bootbox.alert("The passwords entered do not match.");
                 $("#RegisterUser_Password").val('');
@@ -58,8 +69,8 @@
                 $("#RegisterUser_PasswordVerify").val('');
 
                 return false;
-
             }
+            $("#submitCommand").val('Register');
         }
 
     </script>

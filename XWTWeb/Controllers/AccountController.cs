@@ -9,6 +9,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using XWTWeb.Classes;
 using XWTWeb.Models;
 
 namespace XWTWeb.Controllers
@@ -26,18 +27,72 @@ namespace XWTWeb.Controllers
 
 
         [HttpPost]
-        public ActionResult Index(LoginPage user)
+        public ActionResult Index(LoginPage user, string submitCommand)
         {
 
-            if (string.IsNullOrEmpty(user.LoginUser.UserName) || string.IsNullOrEmpty(user.LoginUser.Password))
+            switch (submitCommand)
             {
-                user.LoginUser.LoginFails++;
-                return View(user);
+                case "Login":
+
+                    if (string.IsNullOrEmpty(user.LoginUser.UserName) || string.IsNullOrEmpty(user.LoginUser.Password))
+                    {
+                        //user.LoginUser.LoginFails++;
+                        break;
+                    }
+
+                    user.LoginUser.Password = SHA1.Encode(user.LoginUser.Password);
+
+                    var requestLogin = new RestRequest("UserAccount", Method.GET);
+                    requestLogin.AddJsonBody(JsonConvert.SerializeObject(user.LoginUser));
+
+                    //user.LoginUser.Password = "";
+
+                    // execute the request
+                    IRestResponse responseLogin = client.Execute(requestLogin);
+                    var contentLogin = responseLogin.Content;
+
+                    if (contentLogin == "GET: TRUE")
+                    {
+                        return LoginUser(user.LoginUser);
+                    }
+
+                    break;
+                    
+
+                case "Register":
+
+                    user.RegisterUser.Password = SHA1.Encode(user.RegisterUser.Password);
+
+                    var requestRegister = new RestRequest("UserAccount", Method.POST);
+                    //request.AddUrlSegment("id", 0);
+                    requestRegister.AddJsonBody(JsonConvert.SerializeObject(user.RegisterUser));
+
+                    user.RegisterUser.Password = "";
+
+                    // execute the request
+                    IRestResponse responseRegister = client.Execute(requestRegister);
+                    var contentRegister = responseRegister.Content;
+
+                    if (contentRegister == "POST: Success")
+                    {
+                        return LoginUser(user.RegisterUser);
+                    }
+
+                    
+
+                    break;
             }
 
 
-            user.LoginUser.Password = "";
-            FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(1, user.LoginUser.UserName, DateTime.Now, DateTime.Now.AddDays(7), false, JsonConvert.SerializeObject(user), FormsAuthentication.FormsCookiePath);
+            return View(user);
+
+        }
+
+
+        private ActionResult LoginUser(UserAccount user)
+        {
+            user.Password = "";
+            FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(1, user.UserName, DateTime.Now, DateTime.Now.AddDays(7), false, JsonConvert.SerializeObject(user), FormsAuthentication.FormsCookiePath);
             string hashCookies = FormsAuthentication.Encrypt(ticket);
             System.Web.HttpCookie cookie = new System.Web.HttpCookie(FormsAuthentication.FormsCookieName, hashCookies)
             {
@@ -46,7 +101,6 @@ namespace XWTWeb.Controllers
             };
 
             System.Web.HttpContext.Current.Response.Cookies.Add(cookie);
-            //return Json(Url.Action("Main", "Player"));
             return RedirectToAction("Main", "Player");
         }
 
