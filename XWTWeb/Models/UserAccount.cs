@@ -16,8 +16,8 @@ namespace XWTWeb.Models
         public string Password { get; set; }
         public string Email { get; set; } = "";
         public bool IsAdmin { get; set; } = false;
-        //public int LoginFails { get; set; } = 0;
-        //public string APIPassword { get; set; }
+        public int LoginFails { get; set; } = 0;
+        public string APIPassword { get; set; }
     }
 
     public class MyPrincipal : IPrincipal

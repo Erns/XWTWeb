@@ -8,6 +8,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using XWTWeb.Classes;
 using XWTWeb.Models;
 
 namespace XWTWeb.Controllers
@@ -25,11 +26,11 @@ namespace XWTWeb.Controllers
 
             try
             {
-                
+
                 // client.Authenticator = new HttpBasicAuthenticator(username, password);
 
                 var request = new RestRequest("Players/{id}", Method.GET);
-                request.AddUrlSegment("id", 0);
+                request.AddUrlSegment("id", Utilities.CurrentUser.Id);
 
                 // execute the request
                 IRestResponse response = client.Execute(request);

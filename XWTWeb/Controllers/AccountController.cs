@@ -36,35 +36,51 @@ namespace XWTWeb.Controllers
 
                     if (string.IsNullOrEmpty(user.LoginUser.UserName) || string.IsNullOrEmpty(user.LoginUser.Password))
                     {
-                        //user.LoginUser.LoginFails++;
+                        user.LoginUser.LoginFails++;
                         break;
                     }
 
+                    //Hash up our password here
                     user.LoginUser.Password = SHA1.Encode(user.LoginUser.Password);
 
                     var requestLogin = new RestRequest("UserAccount", Method.GET);
-                    requestLogin.AddJsonBody(JsonConvert.SerializeObject(user.LoginUser));
+                    requestLogin.AddParameter("value", JsonConvert.SerializeObject(user.LoginUser));
 
-                    //user.LoginUser.Password = "";
+                    user.LoginUser.Password = "";
 
                     // execute the request
                     IRestResponse responseLogin = client.Execute(requestLogin);
                     var contentLogin = responseLogin.Content;
 
-                    if (contentLogin == "GET: TRUE")
+                    //Check if we get a fail from API
+                    if (contentLogin.ToUpper().Contains("GET: FALSE"))
                     {
-                        return LoginUser(user.LoginUser);
+                        user.LoginUser.LoginFails++;
+                        break;
                     }
 
+                    //Put this in its own catch just in case it returns bad info
+                    try
+                    {
+                        UserAccount result = JsonConvert.DeserializeObject<UserAccount>(JsonConvert.DeserializeObject(contentLogin).ToString());
+                        if (result.Id != 0)
+                        {
+                            return LoginUser(result);
+                        }
+                    }
+                    catch
+                    {
+                        //Do nothing
+                    }
+
+                    user.LoginUser.LoginFails++;
                     break;
                     
 
                 case "Register":
-
                     user.RegisterUser.Password = SHA1.Encode(user.RegisterUser.Password);
 
                     var requestRegister = new RestRequest("UserAccount", Method.POST);
-                    //request.AddUrlSegment("id", 0);
                     requestRegister.AddJsonBody(JsonConvert.SerializeObject(user.RegisterUser));
 
                     user.RegisterUser.Password = "";
@@ -73,16 +89,13 @@ namespace XWTWeb.Controllers
                     IRestResponse responseRegister = client.Execute(requestRegister);
                     var contentRegister = responseRegister.Content;
 
-                    if (contentRegister == "POST: Success")
+                    if (contentRegister.ToUpper().Contains("POST: SUCCESS"))
                     {
                         return LoginUser(user.RegisterUser);
-                    }
-
-                    
+                    }                   
 
                     break;
             }
-
 
             return View(user);
 
@@ -131,36 +144,6 @@ namespace XWTWeb.Controllers
             System.Web.HttpCookie cookie = new System.Web.HttpCookie(FormsAuthentication.FormsCookieName, "");
             cookie.Expires = DateTime.Now.AddYears(-1);
             System.Web.HttpContext.Current.Response.Cookies.Add(cookie);
-        }
-
-        public void RegisterUserAccount(string loginInfo)
-        {
-            var result = JsonConvert.DeserializeObject(loginInfo);
-
-            try
-            {
-
-                UserAccount user = new UserAccount();
-
-
-                // client.Authenticator = new HttpBasicAuthenticator(username, password);
-
-                //var request = new RestRequest("UserAccount/{id}", Method.POST);
-                //request.AddUrlSegment("id", 0);
-                //request.AddJsonBody(JsonConvert.SerializeObject(result));
-
-                //// execute the request
-                //IRestResponse response = client.Execute(request);
-                //var content = response.Content; // raw content as string
-
-            }
-            catch (Exception ex)
-            {
-                Console.Write(string.Format("AccountController.RegisterUserAccount{0}Error:{1}", Environment.NewLine, ex.Message));
-            }
-
-
-            return;
         }
 
     }

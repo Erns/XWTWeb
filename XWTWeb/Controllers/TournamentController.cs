@@ -19,5 +19,11 @@ namespace XWTWeb.Controllers
 
             return View(tournaments.ToList());
         }
+
+
+        public ActionResult AddEdit()
+        {
+            return View();
+        }
     }
 }

@@ -1,0 +1,34 @@
+﻿@model XWTWeb.Models.TournamentMain
+
+
+@using (Html.BeginForm("AddEdit", "Tournament", FormMethod.Post))
+{
+    <div class="container jumbotron mt-2 pt-3">
+        <div class="row">
+
+            <div class="col-12 col-md-4">
+                <div class="row p-2">
+                    <label class="col-12 font-weight-bold" style="font-size:x-large">Tournament Information</label>
+                    @Html.TextBoxFor(model => model.Name, new { @class = "col-12 form-control m-1", @placeholder = "Tournament Name" })
+                    <div class="w-100"></div>
+                    @Html.TextBoxFor(model => model.StartDate, new { @class = "col-12 form-control m-1", @placeholder = "Start Date", @id = "startDate" })
+                    <div class="w-100"></div>
+                    @Html.TextBoxFor(model => model.MaxPoints, new { @class = "col-12 form-control m-1", @placeholder = "Max Points" })
+                    <div class="w-100"></div>
+                    @Html.TextBoxFor(model => model.RoundTimeLength, new { @class = "col-12 form-control m-1", @placeholder = "Round Time" })
+                    <div class="w-100"></div>
+                    <button type="submit" class="btn btn-primary col" onclick="">Save</button>
+                </div>
+            </div>           
+
+            <input type="hidden" id="submitCommand" name="submitCommand" value="" />
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#startDate").datepicker();
+    });
+
+</script>

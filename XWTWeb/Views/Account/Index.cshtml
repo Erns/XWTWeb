@@ -12,11 +12,11 @@
                     @Html.PasswordFor(model => model.LoginUser.Password, new { @class = "col-12 form-control m-1", @placeholder = "Password" })
                     <div class="w-100"></div>
                     <button type="submit" class="btn btn-primary col" onclick="LoginOnClick();">Login</button>
-                    @*@if (Model.LoginUser.LoginFails > 0)
+                    @if (Model.LoginUser.LoginFails > 0)
                     {
                         <div class="w-100"></div>
                         <label class="text-danger col d-flex justify-content-center pt-3">Login failed</label>
-                    }*@
+                    }
                 </div>
             </div>
 
@@ -45,7 +45,7 @@
 
     <script type="text/javascript">
 
-        $(document).ready(function () {
+        $(function () {
             $("#submitCommand").val('');
         });
 
