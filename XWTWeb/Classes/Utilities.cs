@@ -1,5 +1,8 @@
-﻿using System;
+﻿using RestSharp;
+using RestSharp.Authenticators;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using XWTWeb.Models;
@@ -30,6 +33,15 @@ namespace XWTWeb.Classes
             }
         }
 
+        public static RestClient InitializeRestClient()
+        {
+            RestClient client = new RestClient(ConfigurationManager.AppSettings["XWTWebAPIAddress"].ToString())
+            {
+                Authenticator = new HttpBasicAuthenticator(CurrentUser.UserName, CurrentUser.APIPassword)
+            };
+
+            return client;
+        }
     }
    
     

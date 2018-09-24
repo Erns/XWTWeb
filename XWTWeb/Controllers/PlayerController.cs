@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using RestSharp;
+using RestSharp.Authenticators;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -17,8 +18,7 @@ namespace XWTWeb.Controllers
     [Authorize]
     public class PlayerController : Controller
     {
-        RestClient client = new RestClient(ConfigurationManager.AppSettings["XWTWebAPIAddress"].ToString());
-        // client.Authenticator = new HttpBasicAuthenticator(username, password);
+        RestClient client = Utilities.InitializeRestClient();
 
         public ActionResult Main()
         {
@@ -26,8 +26,6 @@ namespace XWTWeb.Controllers
 
             try
             {
-
-                // client.Authenticator = new HttpBasicAuthenticator(username, password);
 
                 var request = new RestRequest("Players/{id}", Method.GET);
                 request.AddUrlSegment("id", Utilities.CurrentUser.Id);
@@ -57,14 +55,13 @@ namespace XWTWeb.Controllers
         {
             List<Player> result = JsonConvert.DeserializeObject<List<Player>>(players);
 
-
             try
             {
 
                 // client.Authenticator = new HttpBasicAuthenticator(username, password);
 
                 var request = new RestRequest("Players/{id}", Method.PUT);
-                request.AddUrlSegment("id", 0);
+                request.AddUrlSegment("id", Utilities.CurrentUser.Id);
                 request.AddJsonBody(JsonConvert.SerializeObject(result));
 
                 // execute the request

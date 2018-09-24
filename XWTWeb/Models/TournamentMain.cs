@@ -12,7 +12,7 @@ namespace XWTWeb.Models
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
-        public DateTime StartDate { get; set; }
+        public Nullable<DateTime> StartDate { get; set; } = null;
         public int MaxPoints { get; set; }
         public int RoundTimeLength { get; set; }
         public Nullable<DateTime> DateDeleted { get; set; } = null;
@@ -74,8 +74,7 @@ namespace XWTWeb.Models
         public List<TournamentMainRoundTable> Tables { get; set; } = new List<TournamentMainRoundTable>();
 
     }
-
-
+    
     public class TournamentMainRoundTable
     {
         [Key]

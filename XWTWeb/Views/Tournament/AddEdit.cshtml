@@ -2,33 +2,55 @@
 
 
 @using (Html.BeginForm("AddEdit", "Tournament", FormMethod.Post))
-{
-    <div class="container jumbotron mt-2 pt-3">
-        <div class="row">
+{   
+    <form>
+        <div class="jumbotron">
+            <div class="col-12 col-md-7 col-lg-5">
 
-            <div class="col-12 col-md-4">
-                <div class="row p-2">
-                    <label class="col-12 font-weight-bold" style="font-size:x-large">Tournament Information</label>
-                    @Html.TextBoxFor(model => model.Name, new { @class = "col-12 form-control m-1", @placeholder = "Tournament Name" })
-                    <div class="w-100"></div>
-                    @Html.TextBoxFor(model => model.StartDate, new { @class = "col-12 form-control m-1", @placeholder = "Start Date", @id = "startDate" })
-                    <div class="w-100"></div>
-                    @Html.TextBoxFor(model => model.MaxPoints, new { @class = "col-12 form-control m-1", @placeholder = "Max Points" })
-                    <div class="w-100"></div>
-                    @Html.TextBoxFor(model => model.RoundTimeLength, new { @class = "col-12 form-control m-1", @placeholder = "Round Time" })
-                    <div class="w-100"></div>
-                    <button type="submit" class="btn btn-primary col" onclick="">Save</button>
+                <label class="col font-weight-bold pb-2" style="font-size:x-large">Tournament Information</label>
+                <div class="w-100"></div>
+
+                <div class="form-row">
+                    <div class="form-group col">
+                        @Html.TextBoxFor(model => model.Name, new { @class = "form-control col", @required = "" })
+                        <label class="form-control-placeholder" for="Name">Tournament Name</label>
+                    </div>
                 </div>
-            </div>           
 
-            <input type="hidden" id="submitCommand" name="submitCommand" value="" />
+                <div class="form-row">
+                    <div class="form-group col">
+                        @Html.TextBoxFor(model => model.StartDate, new { @class = "form-control col", @required = "" })
+                        <label class="form-control-placeholder" for="StartDate">Start Date</label>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col">
+                        @Html.TextBoxFor(model => model.MaxPoints, new { @class = "form-control col", @required = "" })
+                        <label class="form-control-placeholder" for="MaxPoints">Max Points</label>
+                    </div>
+
+                    <div class="form-group col">
+                        @Html.TextBoxFor(model => model.RoundTimeLength, new { @class = "form-control col", @required = "" })
+                        <label class="form-control-placeholder" for="RoundTimeLength">Round Time</label>
+                    </div>
+                </div>
+
+                <div class="w-100"></div>
+                <button type="submit" class="btn btn-primary col" onclick="">Save</button>
+
+                <input type="hidden" id="submitCommand" name="submitCommand" value="" />
+
+
+            </div>
         </div>
-    </div>
+    </form>
+
 }
 
 <script type="text/javascript">
-    $(document).ready(function () {
-        $("#startDate").datepicker();
-    });
+        $(document).ready(function () {
+            $("#StartDate").datepicker();
+        });
 
 </script>

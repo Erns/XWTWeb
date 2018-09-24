@@ -17,7 +17,7 @@ namespace XWTWeb.Controllers
     [RequireHttps]
     public class AccountController : Controller
     {
-        RestClient client = new RestClient(ConfigurationManager.AppSettings["XWTWebAPIAddress"].ToString());
+        RestClient client = Utilities.InitializeRestClient();
 
         // GET: Account
         public ActionResult Index()
@@ -78,12 +78,12 @@ namespace XWTWeb.Controllers
                     
 
                 case "Register":
+                    string strTmpPW = user.RegisterUser.Password;
+
                     user.RegisterUser.Password = SHA1.Encode(user.RegisterUser.Password);
 
                     var requestRegister = new RestRequest("UserAccount", Method.POST);
                     requestRegister.AddJsonBody(JsonConvert.SerializeObject(user.RegisterUser));
-
-                    user.RegisterUser.Password = "";
 
                     // execute the request
                     IRestResponse responseRegister = client.Execute(requestRegister);
@@ -91,7 +91,10 @@ namespace XWTWeb.Controllers
 
                     if (contentRegister.ToUpper().Contains("POST: SUCCESS"))
                     {
-                        return LoginUser(user.RegisterUser);
+                        //return LoginUser(user.RegisterUser);
+                        user.LoginUser = user.RegisterUser;
+                        user.LoginUser.Password = strTmpPW;
+                        return Index(user, "Login");
                     }                   
 
                     break;
