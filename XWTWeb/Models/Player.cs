@@ -14,6 +14,7 @@ namespace XWTWeb.Models
         public string Group { get; set; }
         public string Email { get; set; }
         public bool Active { get; set; } = true;
+        public Nullable<DateTime> DateDeleted { get; set; } = null;
 
         public Player(int Id, string Name, string Email = "", string Group = "")
         {

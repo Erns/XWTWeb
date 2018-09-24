@@ -46,10 +46,6 @@ namespace XWTWeb.Controllers
             try
             {
 
-                // client.Authenticator = new HttpBasicAuthenticator(username, password);
-
-                //client.Authenticator = new HttpBasicAuthenticator(Utilities.CurrentUser.UserName, Utilities.CurrentUser.APIPassword);
-
                 //var request = new RestRequest("Tournaments/{id}", Method.POST);
                 //request.AddUrlSegment("id", Utilities.CurrentUser.Id);
 

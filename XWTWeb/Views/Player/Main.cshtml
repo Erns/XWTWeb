@@ -74,7 +74,7 @@
             message: "Are you sure you want to remove this player?",
             callback: function (result) {
                 if (result) {
-                    $(btn).parent().parent().remove();
+                    $(btn).parent().parent().hide();
                     $('.popover').remove();
                 }
             }
@@ -113,15 +113,23 @@
 
         //Pull info from edited Players
         $("tr[id^=playerMainTableRow_]").each(function () {
-            if (!$(this).attr('readonly') && !$(this).prop('readonly')) {
+            if ((!$(this).attr('readonly') && !$(this).prop('readonly')) || !$(this).is(':visible')) {
                 playerId = $(this).data('playerid');
                 var player = {
                     Id: playerId,
                     Name: $("#playerMainTableRowName_" + playerId).val(),
                     Email: $("#playerMainTableRowEmail_" + playerId).val(),
                     Group: $("#playerMainTableRowGroup_" + playerId).val(),
-                    Active: true
+                    Active: true,
+                    DateDeleted: null
                 };
+
+                //If not visible, then deleted
+                if (!$(this).is(':visible')) {
+                    player.Active = false;
+                    player.DateDeleted = Date.now();
+                }                   
+
                 jsonData.push(player);
             }
         });

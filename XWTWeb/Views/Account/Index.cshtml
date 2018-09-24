@@ -1,6 +1,6 @@
 ﻿@model XWTWeb.Models.LoginPage
 
-@using (Html.BeginForm("Index", "Account", FormMethod.Post))
+@using (Html.BeginForm("Index", "Account", FormMethod.Post, new { @id = "LoginForm" }))
 {
     <div class="container jumbotron mt-2 pt-3">
         <div class="row">
@@ -49,6 +49,23 @@
             $("#submitCommand").val('');
         });
 
+        //Add functionality to the "enter" key depending on which field is being focused on
+        $("#LoginForm").keypress(function (e) {
+            if (e.which == 13) {
+                if (!$(document.activeElement)) {
+                    e.preventDefault();
+                    return false;
+                }
+                var focused = $(document.activeElement);
+                if (focused.attr('id').startsWith('RegisterUser_')) {
+                    return RegisterOnClick();
+                }
+                else {
+                    return LoginOnClick();
+                }
+            }
+        });
+
         function LoginOnClick() {
             $("#submitCommand").val('Login');
         }
@@ -67,7 +84,6 @@
                 bootbox.alert("Please enter values into all Registration fields before proceeding.");
                 $("#RegisterUser_Password").val('');
                 $("#RegisterUser_PasswordVerify").val('');
-
                 return false;
             }
             $("#submitCommand").val('Register');

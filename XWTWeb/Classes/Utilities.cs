@@ -35,11 +35,11 @@ namespace XWTWeb.Classes
 
         public static RestClient InitializeRestClient()
         {
-            RestClient client = new RestClient(ConfigurationManager.AppSettings["XWTWebAPIAddress"].ToString())
-            {
-                Authenticator = new HttpBasicAuthenticator(CurrentUser.UserName, CurrentUser.APIPassword)
-            };
+            RestClient client = new RestClient(ConfigurationManager.AppSettings["XWTWebAPIAddress"].ToString());
 
+            if (CurrentUser != null)
+                client.Authenticator = new HttpBasicAuthenticator(CurrentUser.UserName, CurrentUser.APIPassword);
+            
             return client;
         }
     }
