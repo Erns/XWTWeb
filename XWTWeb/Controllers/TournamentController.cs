@@ -23,7 +23,27 @@ namespace XWTWeb.Controllers
         public ActionResult Main()
         {
             List<TournamentMain> tournaments = new List<TournamentMain>();
-            
+
+            try
+            {
+
+                var request = new RestRequest("Tournaments/{userid}", Method.GET);
+                request.AddUrlSegment("userid", Utilities.CurrentUser.Id);
+
+                // execute the request
+                IRestResponse response = client.Execute(request);
+                var content = response.Content;
+
+                List<TournamentMain> result = JsonConvert.DeserializeObject<List<TournamentMain>>(JsonConvert.DeserializeObject(content).ToString());
+                foreach (TournamentMain tournament in result)
+                {
+                    tournaments.Add(new TournamentMain(tournament.Id, tournament.Name, tournament.StartDate, tournament.MaxPoints, tournament.RoundTimeLength));
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Write(string.Format("PlayerController.Main{0}Error:{1}", Environment.NewLine, ex.Message));
+            }
 
             return View(tournaments.ToList());
         }
@@ -45,23 +65,18 @@ namespace XWTWeb.Controllers
 
             try
             {
+                var request = new RestRequest("Tournaments/{userid}", Method.PUT);
+                request.AddUrlSegment("userid", Utilities.CurrentUser.Id);
+                request.AddJsonBody(JsonConvert.SerializeObject(tournament));
 
-                //var request = new RestRequest("Tournaments/{id}", Method.POST);
-                //request.AddUrlSegment("id", Utilities.CurrentUser.Id);
+                // execute the request
+                IRestResponse response = client.Execute(request);
+                var content = response.Content;
 
-                //// execute the request
-                //IRestResponse response = client.Execute(request);
-                //var content = response.Content;
-
-                //List<Player> result = JsonConvert.DeserializeObject<List<Player>>(JsonConvert.DeserializeObject(content).ToString());
-                //foreach (Player player in result)
-                //{
-                //    players.Add(new Player(player.Id, player.Name, player.Email, player.Group));
-                //}
             }
             catch (Exception ex)
             {
-                Console.Write(string.Format("PlayerController.Main{0}Error:{1}", Environment.NewLine, ex.Message));
+                Console.Write(string.Format("TournamentController.AddEdit{0}Error:{1}", Environment.NewLine, ex.Message));
             }
 
             return RedirectToAction("Main", "Tournament");

@@ -27,8 +27,8 @@ namespace XWTWeb.Controllers
             try
             {
 
-                var request = new RestRequest("Players/{id}", Method.GET);
-                request.AddUrlSegment("id", Utilities.CurrentUser.Id);
+                var request = new RestRequest("Players/{userid}", Method.GET);
+                request.AddUrlSegment("userid", Utilities.CurrentUser.Id);
 
                 // execute the request
                 IRestResponse response = client.Execute(request);
@@ -45,8 +45,6 @@ namespace XWTWeb.Controllers
                 Console.Write(string.Format("PlayerController.Main{0}Error:{1}", Environment.NewLine, ex.Message));
             }
 
-            ViewBag.Whatever = "Your player home page, whatever.";
-
             return View(players.ToList());
         }
 
@@ -60,8 +58,8 @@ namespace XWTWeb.Controllers
 
                 // client.Authenticator = new HttpBasicAuthenticator(username, password);
 
-                var request = new RestRequest("Players/{id}", Method.PUT);
-                request.AddUrlSegment("id", Utilities.CurrentUser.Id);
+                var request = new RestRequest("Players/{userid}", Method.PUT);
+                request.AddUrlSegment("userid", Utilities.CurrentUser.Id);
                 request.AddJsonBody(JsonConvert.SerializeObject(result));
 
                 // execute the request
