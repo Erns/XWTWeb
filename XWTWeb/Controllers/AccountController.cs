@@ -91,7 +91,7 @@ namespace XWTWeb.Controllers
 
                     if (contentRegister.ToUpper().Contains("POST: SUCCESS"))
                     {
-                        //return LoginUser(user.RegisterUser);
+                        //Programmatically login the user after successfully registered (TODO:  may want to verify email etc in future)
                         user.LoginUser = user.RegisterUser;
                         user.LoginUser.Password = strTmpPW;
                         return Index(user, "Login");
@@ -100,8 +100,9 @@ namespace XWTWeb.Controllers
                     break;
             }
 
+            user.LoginUser.Password = "";
+            user.RegisterUser.Password = "";
             return View(user);
-
         }
 
 

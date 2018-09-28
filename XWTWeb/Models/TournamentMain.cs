@@ -32,6 +32,11 @@ namespace XWTWeb.Models
             return String.Join(",", lstIDs.ToArray());
         }
 
+        public TournamentMain()
+        {
+
+        }
+
         public TournamentMain(int Id = 0, string Name = "", DateTime? StartDate = null, int MaxPoints = 0, int RoundTimeLength = 0)
         {
             this.Id = Id;

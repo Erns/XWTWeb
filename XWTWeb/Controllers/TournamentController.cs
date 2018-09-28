@@ -37,7 +37,7 @@ namespace XWTWeb.Controllers
                 List<TournamentMain> result = JsonConvert.DeserializeObject<List<TournamentMain>>(JsonConvert.DeserializeObject(content).ToString());
                 foreach (TournamentMain tournament in result)
                 {
-                    tournaments.Add(new TournamentMain(tournament.Id, tournament.Name, tournament.StartDate, tournament.MaxPoints, tournament.RoundTimeLength));
+                    tournaments.Add(tournament);
                 }
             }
             catch (Exception ex)
@@ -49,12 +49,35 @@ namespace XWTWeb.Controllers
         }
 
 
-        public ActionResult AddEdit()
+        public ActionResult AddEdit(int id)
         {
 
-            TournamentMain tournament = new TournamentMain();
-            tournament.MaxPoints = 200;
-            tournament.RoundTimeLength = 75;
+            TournamentMain tournament = new TournamentMain(id, "", null, 200, 75);
+
+            try
+            {
+                if (id > 0)
+                {
+                    var request = new RestRequest("Tournaments/{userid}/{id}", Method.GET);
+                    request.AddUrlSegment("userid", Utilities.CurrentUser.Id);
+                    request.AddUrlSegment("id", id);
+
+                    // execute the request
+                    IRestResponse response = client.Execute(request);
+                    var content = response.Content;
+
+                    List<TournamentMain> result = JsonConvert.DeserializeObject<List<TournamentMain>>(JsonConvert.DeserializeObject(content).ToString());
+                    foreach (TournamentMain tmpTournament in result)
+                    {
+                        tournament = tmpTournament;
+                        break;
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.Write(string.Format("PlayerController.Main{0}AddEdit:{1}", Environment.NewLine, ex.Message));
+            }
 
             return View(tournament);
         }
@@ -65,8 +88,10 @@ namespace XWTWeb.Controllers
 
             try
             {
-                var request = new RestRequest("Tournaments/{userid}", Method.PUT);
+                //TODO:  Correct userid/id shit
+                var request = new RestRequest("Tournaments/{userid}/{id}", Method.PUT);
                 request.AddUrlSegment("userid", Utilities.CurrentUser.Id);
+                request.AddUrlSegment("id", Utilities.CurrentUser.Id);
                 request.AddJsonBody(JsonConvert.SerializeObject(tournament));
 
                 // execute the request

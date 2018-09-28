@@ -37,7 +37,7 @@ namespace XWTWeb.Controllers
                 List<Player> result = JsonConvert.DeserializeObject<List<Player>>(JsonConvert.DeserializeObject(content).ToString());
                 foreach (Player player in result)
                 {
-                    players.Add(new Player(player.Id, player.Name, player.Email, player.Group));
+                    players.Add(player);
                 }
             }
             catch (Exception ex)

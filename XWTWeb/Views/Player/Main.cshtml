@@ -28,7 +28,7 @@
                     <td><input type="text" class="required col form-control form-control-sm" value="" placeholder="Name" data-valuetype="Name" onfocus="$(this).popover('dispose');" /></td>
                     <td><input type="text" class="col form-control form-control-sm" value="" placeholder="Email Address" data-valuetype="Email" /></td>
                     <td><input type="text" class="col form-control form-control-sm" value="" placeholder="Group" data-valuetype="Group" /></td>
-                    <td><a href="#" title="Delete" style="font-weight:bold" class="btn btn-danger fas fa-trash-alt" onclick="RemovePrompt(this);"></a> </td>
+                    <td><a href="#" title="Delete" style="font-weight:bold" class="btn btn-danger fas fa-trash-alt" onclick="RemovePlayerRow(this);"></a> </td>
                 </tr>
 
                 @foreach (XWTWeb.Models.Player player in Model)
@@ -74,11 +74,16 @@
             message: "Are you sure you want to remove this player?",
             callback: function (result) {
                 if (result) {
-                    $(btn).parent().parent().hide();
-                    $('.popover').remove();
+                    RemovePlayerRow(btn);
                 }
             }
         });
+    }
+
+    //Delete player Row
+    function RemovePlayerRow(btn) {
+        $(btn).parent().parent().hide();
+        $('.popover').remove();
     }
 
     //Undo changes made

@@ -19,7 +19,7 @@
 
                 <div class="form-row">
                     <div class="form-group col">
-                        @Html.TextBoxFor(model => model.StartDate, new { @class = "form-control col", @required = "" })
+                        @Html.TextBoxFor(model => model.StartDate, "{0:MM/dd/yyyy}", new { @class = "form-control col", @required = "" })
                         <label class="form-control-placeholder" for="StartDate">Start Date</label>
                     </div>
                 </div>
@@ -37,10 +37,9 @@
                 </div>
 
                 <div class="w-100"></div>
-                <button type="submit" class="btn btn-primary col" onclick="">Save</button>
+                <button type="submit" class="btn btn-primary col">Save</button>
 
-                <input type="hidden" id="submitCommand" name="submitCommand" value="" />
-                @Html.HiddenFor(model => model.Id)
+                @*<input type="hidden" id="submitCommand" name="submitCommand" value="" />*@
 
             </div>
         </div>
