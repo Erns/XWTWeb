@@ -14,7 +14,7 @@
         </div>
     </div>
     <div class="row">
-        <table id="playerMainTable" class="table table-hover table-striped">
+        <table id="playerMainTable" class="table table-sm table-hover table-striped">
             <thead class="thead-light">
                 <tr>
                     <th scope="col">Name</th>
@@ -25,35 +25,54 @@
             </thead>
             <tbody>
                 <tr id="playerMainTableRowTemplate" style="display:none" data-rowtype="NewPlayer">
-                    <td><input type="text" class="required col form-control form-control-sm" value="" placeholder="Name" data-valuetype="Name" onfocus="$(this).popover('dispose');" /></td>
-                    <td><input type="text" class="col form-control form-control-sm" value="" placeholder="Email Address" data-valuetype="Email" /></td>
-                    <td><input type="text" class="col form-control form-control-sm" value="" placeholder="Group" data-valuetype="Group" /></td>
-                    <td><a href="#" title="Delete" style="font-weight:bold" class="btn btn-danger fas fa-trash-alt" onclick="RemovePlayerRow(this);"></a> </td>
+                    <td class="align-middle"><input type="text" class="required col form-control form-control-sm" value="" placeholder="Name" data-valuetype="Name" onfocus="$(this).popover('dispose');" /></td>
+                    <td class="align-middle"><input type="text" class="col form-control form-control-sm" value="" placeholder="Email Address" data-valuetype="Email" /></td>
+                    <td class="align-middle"><input type="text" class="col form-control form-control-sm" value="" placeholder="Group" data-valuetype="Group" /></td>
+                    <td class="d-flex justify-content-center align-content-center">
+                    <a href="#" title="Delete" style="font-weight:bold" class="btn btn-danger fas fa-trash-alt m-0 p-2" onclick="RemovePlayerRow(this);"></a> 
+                    </td>
                 </tr>
 
                 @foreach (XWTWeb.Models.Player player in Model)
                 {
-                <tr readonly id="playerMainTableRow_@player.Id" data-playerid="@player.Id">
-                    <td><input readonly id="playerMainTableRowName_@player.Id" type="text" class="required col form-control form-control-sm" value="@player.Name" placeholder="Name" data-valuetype="Name" data-originalvalue="@player.Name" ondblclick="UnlockInput(this);" onfocus="$(this).popover('dispose');" /></td>
-                    <td><input readonly id="playerMainTableRowEmail_@player.Id" type="text" class="col form-control form-control-sm" value="@player.Email" placeholder="Email Address" data-valuetype="Email" data-originalvalue="@player.Email" ondblclick="UnlockInput(this);" /></td>
-                    <td><input readonly id="playerMainTableRowGroup_@player.Id" type="text" class="col form-control form-control-sm" value="@player.Group" placeholder="Group" data-valuetype="Group" data-originalvalue="@player.Group" ondblclick="UnlockInput(this);" /></td>
-                    <td>
-                        <a href="#" title="Delete" style="font-weight:bold" class="btn btn-danger fas fa-trash-alt" onclick="RemovePrompt(this);"></a>
-                        <a href="#" title="Undo" style="font-weight:bold" class="btn btn-warning fas fa-undo" onclick="UndoPrompt(@player.Id);"></a>
-                    </td>
-                </tr>
+                    <tr readonly id="playerMainTableRow_@player.Id" data-playerid="@player.Id">
+                        <td class="align-middle"><input readonly id="playerMainTableRowName_@player.Id" type="text" class="required col form-control form-control-sm" value="@player.Name" placeholder="Name" data-valuetype="Name" data-originalvalue="@player.Name" ondblclick="UnlockInput(this);" onfocus="$(this).popover('dispose');" /></td>
+                        <td class="align-middle"><input readonly id="playerMainTableRowEmail_@player.Id" type="text" class="col form-control form-control-sm" value="@player.Email" placeholder="Email Address" data-valuetype="Email" data-originalvalue="@player.Email" ondblclick="UnlockInput(this);" /></td>
+                        <td class="align-middle"><input readonly id="playerMainTableRowGroup_@player.Id" type="text" class="col form-control form-control-sm" value="@player.Group" placeholder="Group" data-valuetype="Group" data-originalvalue="@player.Group" ondblclick="UnlockInput(this);" /></td>
+                        <td class="d-flex justify-content-center align-content-center">
+                            <a href="#" title="Delete" style="font-weight:bold" class="btn btn-danger fas fa-trash-alt m-0 mr-1 p-2" onclick="RemovePrompt(this);"></a>
+                            <a href="#" title="Undo" style="font-weight:bold" class="btn btn-warning fas fa-undo m-0 ml-1 p-2" onclick="UndoPrompt(@player.Id);"></a>
+                        </td>
+                    </tr>
                 }
             </tbody>
         </table>
     </div>
 
-    @*<input type="submit" class="btn btn-primary" value="Submit" />*@
-    <div class="row d-flex justify-content-end align-content-center">
-        <button type="button" class="btn btn-success far fa-save" style="font-size:xx-large" onclick="UpdatePlayer();"></button>
-    </div>
+    <button type="button" class="btn btn-success far fa-save lower-right-button" style="font-size:xx-large" onclick="UpdatePlayer();"></button>
+
 </div>
 
 <script type="text/javascript">
+
+    $(document).ready(function () {
+        /* Create an array with the values of all the input boxes in a column */
+        $.fn.dataTable.ext.order['dom-text'] = function (settings, col) {
+            return this.api().column(col, { order: 'index' }).nodes().map(function (td, i) {
+                return $('input', td).val();
+            });
+        }
+
+        $("#playerMainTable").DataTable({
+            "columns": [
+                { "orderDataType": "dom-text", type: 'string' },
+                { "orderDataType": "dom-text", type: 'string' },
+                { "orderDataType": "dom-text", type: 'string' },
+                null
+            ]
+        } );
+        $(".dataTables_wrapper").css("width", "100%");
+    });
 
     //Add new player row
     var intNewPlayerCount = 0;
@@ -61,7 +80,7 @@
         var rowTemplate = $("#playerMainTableRowTemplate").clone();
 
         rowTemplate.attr('id', 'newPlayerRow_' + intNewPlayerCount)
-            .appendTo($("#playerMainTable tbody"))
+            .prependTo($("#playerMainTable tbody"))
             .show();
 
         intNewPlayerCount++;
@@ -108,7 +127,9 @@
         if ($(inpt).prop('readonly')) {
             $(inpt).prop('readonly', false);
             $(inpt).parent().parent().prop('readonly', false).attr('readonly', false);
-            //$(inpt)[0].focus();
+            $(inpt).blur().focus();
+            var tmp = $(inpt).val();
+            $(inpt).val('').val(tmp);
         }
     }
 
@@ -132,7 +153,7 @@
                 //If not visible, then deleted
                 if (!$(this).is(':visible')) {
                     player.Active = false;
-                    player.DateDeleted = Date.now();
+                    player.DateDeleted = new Date().toLocaleString();
                 }                   
 
                 jsonData.push(player);
@@ -153,6 +174,8 @@
 
 
         if (CheckRequiredFields()) {
+            BBoxLoading();
+
             //Update player info
             $.ajax({
                 contentType: 'application/x-www-form-urlencoded; charset=UTF-8',

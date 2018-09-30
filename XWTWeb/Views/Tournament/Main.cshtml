@@ -6,21 +6,21 @@
 
 <div class="container">
 
-
     <nav class="pt-2">
         <div class="nav nav-tabs" id="nav-tab" role="tablist">
             <a class="nav-item nav-link active" id="nav-current-tab" data-toggle="tab" href="#nav-current" role="tab" aria-controls="nav-current" aria-selected="true">Current / Upcoming</a>
             <a class="nav-item nav-link" id="nav-past-tab" data-toggle="tab" href="#nav-past" role="tab" aria-controls="nav-past" aria-selected="false">Past</a>
-        </div>
 
-        <div class="p-2 col d-flex justify-content-end align-content-center">
-            @Html.ActionLink(" ", "AddEdit", "Tournament", routeValues: new { id = 0}, htmlAttributes: new { @style = "font-size:xx-large", @class = "btn btn-outline-success fas fa-plus-square" })
+            <div class="p-2 col d-flex justify-content-end align-content-center">
+                @Html.ActionLink(" ", "AddEdit", "Tournament", routeValues: new { id = 0 }, htmlAttributes: new { @style = "font-size:xx-large", @class = "btn btn-outline-success fas fa-plus-square" })
+            </div>
+
         </div>
     </nav>
 
     <div class="tab-content" id="nav-tabContent">
         @*Current / Upcoming tab*@
-        <div class="tab-pane fade show active jumbotron" id="nav-current" role="tabpanel" aria-labelledby="nav-current-tab">
+        <div class="tab-pane fade show active" id="nav-current" role="tabpanel" aria-labelledby="nav-current-tab">
             <table id="tournamentMainCurrentTable" class="table table-hover table-striped">
                 <thead class="thead-light">
                     <tr>
@@ -32,23 +32,72 @@
                 <tbody>
                     @foreach (XWTWeb.Models.TournamentMain tournament in Model)
                     {
-                        <tr readonly id="tournamentMainTableRow_@tournament.Id" data-tournamentid="@tournament.Id">
+                        if (tournament.StartDate >= DateTime.Now)
+                        {
+                            <tr readonly id="tournamentMainTableRow_@tournament.Id" data-tournamentid="@tournament.Id">
                             <td><label class="">@tournament.Name</label></td>
                             <td><label class="">@tournament.StartDate.Value.ToString("MM/dd/yyyy")</label></td>                            
-                            <td>
-                                <a href="#" title="Delete" style="font-weight:bold" class="btn btn-danger fas fa-trash-alt" onclick="alert('test 1');"></a>
-                                @Html.ActionLink(" ", "AddEdit", "Tournament", routeValues: new { id = tournament.Id}, htmlAttributes: new { @style = "font-weight:bold", @class = "btn btn-secondary fas fa-cogs" })
-                           </td>
-                       </tr>
-                   }
+                            <td class="d-flex justify-content-center align-content-center">
+                                <a href="#" title="Delete" style="font-weight:bold" class="btn btn-danger fas fa-trash-alt m-1 p-2" onclick="alert('test 1');"></a>
+                                @Html.ActionLink(" ", "AddEdit", "Tournament", routeValues: new { id = tournament.Id }, htmlAttributes: new { @style = "font-weight:bold", @class = "btn btn-secondary fas fa-cogs m-1 p-2" })
+                            </td>
+                            </tr>
+                        }
+                    }
                </tbody>
            </table>
 
        </div>
 
         @*Past Tab*@
-        <div class="tab-pane fade jumbotron" id="nav-past" role="tabpanel" aria-labelledby="nav-past-tab">
-        ...
+        <div class="tab-pane fade" id="nav-past" role="tabpanel" aria-labelledby="nav-past-tab">
+            <table id="tournamentMainPastTable" class="table table-hover table-striped">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (XWTWeb.Models.TournamentMain tournament in Model)
+                    {
+                        if (tournament.StartDate < DateTime.Now)
+                        {
+                            <tr readonly id="tournamentMainTableRow_@tournament.Id" data-tournamentid="@tournament.Id">
+                                <td><label class="">@tournament.Name</label></td>
+                                <td><label class="">@tournament.StartDate.Value.ToString("MM/dd/yyyy")</label></td>
+                                <td class="d-flex justify-content-center align-content-center">
+                                    <a href="#" title="Delete" style="font-weight:bold" class="btn btn-danger fas fa-trash-alt" onclick="alert('test 1');"></a>
+                                    @Html.ActionLink(" ", "AddEdit", "Tournament", routeValues: new { id = tournament.Id }, htmlAttributes: new { @style = "font-weight:bold", @class = "btn btn-secondary fas fa-cogs m-1 p-2" })
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
         </div>
+    </div>
 </div>
-</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#tournamentMainCurrentTable").DataTable({
+            "columns": [
+                { "type": "string" },
+                { "type": "string" },
+                null
+            ]
+        });
+
+        $("#tournamentMainPastTable").DataTable({
+            "columns": [
+                { "type": "string" },
+                { "type": "string" },
+                null
+            ]
+        });
+
+        $(".dataTables_wrapper").css("width", "100%");
+    });
+</script>

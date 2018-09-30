@@ -23,10 +23,15 @@ namespace XWTWeb
                       "~/Scripts/bootstrap.bundle.js",
                       "~/Scripts/bootbox.min.js",
                       "~/Scripts/bootstrap-datepicker.js",
+                      "~/Scripts/datatables.js",
+                      "~/Scripts/dataTables.bootstrap4.js",
                       "~/Scripts/utilities.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap-spacelab.css",
+                      "~/Content/bootstrap-datepicker3.css",
+                      "~/Content/datatables.css",
+                      "~/Content/dataTables.bootstrap4.css",
                       "~/Content/site.css"));
         }
     }

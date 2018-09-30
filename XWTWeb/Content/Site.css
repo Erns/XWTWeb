@@ -44,3 +44,9 @@ textarea {
     transform: translate3d(0, -100%, 0);
     opacity: 1;
 }
+
+.lower-right-button {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+}
