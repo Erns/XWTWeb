@@ -186,6 +186,7 @@
     </Compile>
     <Compile Include="Models\LoginPage.cs" />
     <Compile Include="Models\Player.cs" />
+    <Compile Include="Models\TournamentActivity.cs" />
     <Compile Include="Models\TournamentMain.cs" />
     <Compile Include="Models\UserAccount.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

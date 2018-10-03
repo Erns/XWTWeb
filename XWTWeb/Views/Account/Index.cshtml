@@ -50,6 +50,7 @@
         });
 
         //Add functionality to the "enter" key depending on which field is being focused on
+        //TODO:  Let's just have a separate page at this point for Registering eventually
         $("#LoginForm").keypress(function (e) {
             if (e.which == 13) {
                 if (!$(document.activeElement)) {
@@ -57,6 +58,7 @@
                     return false;
                 }
                 var focused = $(document.activeElement);
+                //debugger
                 if (focused.attr('id').startsWith('RegisterUser_')) {
                     return RegisterOnClick();
                 }

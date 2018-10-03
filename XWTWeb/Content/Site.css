@@ -50,3 +50,13 @@ textarea {
     bottom: 15px;
     right: 15px;
 }
+
+.col {
+    flex-grow: 1;
+    transition: all 400ms ease;
+}
+
+.col-1 {
+    flex-shrink: 1;
+    transition: all 400ms ease;
+}

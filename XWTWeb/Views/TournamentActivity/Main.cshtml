@@ -1,9 +1,53 @@
-﻿@model XWTWeb.Models.TournamentMain
+﻿@model XWTWeb.Models.TournamentActivity
+
+
 @{
     ViewBag.Title = "Main";
 }
 
 <div class="container-fluid p-5">
-    Testing
+    <div class="row">
+        <div id="playerColumn" class="col">
+            <div class="row">
+                <button class="col btn btn-secondary" data-toggle="collapse" data-target="#tournamentPlayerSelect" aria-expanded="true" aria-controls="tournamentPlayerSelect" onclick="PlayersBtnClick();">
+                    Players
+                </button>
+            </div>
+            <div class="row collapse show" id="tournamentPlayerSelect">
+                <select id="tournamentAllPlayersList" class="form-control col-4 m-2" size="@Model.AllPlayers.Count" multiple="multiple">
+                    @foreach (XWTWeb.Models.Player player in Model.AllPlayers)
+                    {
+                        <option value="@player.Id">@player.Name</option>
+                    }
+                </select>
+
+                <select id="tournamentActivePlayersList" class="form-control col-4 m-2" size="@Model.AllPlayers.Count" multiple="multiple">
+                    @foreach (XWTWeb.Models.Player player in Model.AllPlayers)
+                    {
+                        <option value="@player.Id">@player.Name</option>
+                    }
+                </select>
+
+            </div>
+
+        </div>
+
+        <div class="col">
+            Rounds
+        </div>
+    </div>
 </div>
 
+
+<script type="text/javascript">
+
+    function PlayersBtnClick() {
+        //This triggers before collapse show has been added/removed, so works "opposite" here
+        if (!$("#tournamentPlayerSelect").hasClass('show')) {
+            $("#playerColumn").removeClass('col-1').addClass('col');
+        } else {
+            $("#playerColumn").addClass('col-1').removeClass('col');
+        }
+    }
+
+</script>
