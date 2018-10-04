@@ -18,3 +18,10 @@ function CheckRequiredFields() {
 function BBoxLoading() {
     bootbox.dialog({ message: '<div class="text-center"><i class="fa fa-spin fa-spinner"></i> Loading...</div>', closeButton: false });
 }
+
+function SortSelect(select) {
+    select.html(select.find('option').sort(function (x, y) {
+        // to change to descending order switch "<" for ">"
+        return $(x).text() > $(y).text() ? 1 : -1;
+    }));
+}

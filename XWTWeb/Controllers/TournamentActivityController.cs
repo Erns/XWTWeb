@@ -23,7 +23,8 @@ namespace XWTWeb.Controllers
             TournamentActivity tournamentActivity = new TournamentActivity();
 
             TournamentMain tournament = new TournamentMain();
-            List<Player> players = new List<Player>();
+            List<Player> playersAll = new List<Player>();
+            List<Player> playersNextRound = new List<Player>();
 
             //Get Tournament Info
             try
@@ -65,7 +66,7 @@ namespace XWTWeb.Controllers
                 List<Player> result = JsonConvert.DeserializeObject<List<Player>>(JsonConvert.DeserializeObject(content).ToString());
                 foreach (Player player in result)
                 {
-                    players.Add(player);
+                    playersAll.Add(player);
                 }
             }
             catch (Exception ex)
@@ -73,7 +74,8 @@ namespace XWTWeb.Controllers
                 Console.Write(string.Format("TournamentActivityController.Main{0}Get Players Error:{1}", Environment.NewLine, ex.Message));
             }
 
-            tournamentActivity.AllPlayers = players;
+            tournamentActivity.AllPlayers = playersAll;
+            tournamentActivity.NextRoundPlayers = playersNextRound;
             tournamentActivity.TournamentMain = tournament;
 
             return View(tournamentActivity);

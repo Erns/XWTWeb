@@ -5,33 +5,79 @@
     ViewBag.Title = "Main";
 }
 
+
 <div class="container-fluid p-5">
     <div class="row">
-        <div id="playerColumn" class="col">
+
+        @*Player Column*@
+        <div id="playerColumn" class="col-12 col-md">
             <div class="row">
                 <button class="col btn btn-secondary" data-toggle="collapse" data-target="#tournamentPlayerSelect" aria-expanded="true" aria-controls="tournamentPlayerSelect" onclick="PlayersBtnClick();">
-                    Players
+                    <h4 class="text-light">Players</h4>
                 </button>
             </div>
             <div class="row collapse show" id="tournamentPlayerSelect">
-                <select id="tournamentAllPlayersList" class="form-control col-4 m-2" size="@Model.AllPlayers.Count" multiple="multiple">
-                    @foreach (XWTWeb.Models.Player player in Model.AllPlayers)
-                    {
-                        <option value="@player.Id">@player.Name</option>
-                    }
-                </select>
+                @*All Players*@
+                <div class="h5 col-5 m-2 p-2 border border-secondary rounded">
+                    @*<div class="container">
+                        <div class="row">
+                            <label class="col-12 col-lg">
+                                All Players
+                            </label>
+                            <select class="form-control col"></select>
+                        </div>
+                    </div>*@
 
-                <select id="tournamentActivePlayersList" class="form-control col-4 m-2" size="@Model.AllPlayers.Count" multiple="multiple">
-                    @foreach (XWTWeb.Models.Player player in Model.AllPlayers)
-                    {
-                        <option value="@player.Id">@player.Name</option>
-                    }
-                </select>
+                    <div class="container">
+                        <div class="row">
+                            All Players
+                        </div>
+                    </div>
 
+                    <div class="container">
+                        <select id="tournamentAllPlayersList" class="form-control col mt-2" size="@Model.AllPlayers.Count" multiple="multiple">
+                            @foreach (XWTWeb.Models.Player player in Model.AllPlayers)
+                            {
+                                <option value="@player.Id">@player.Name</option>
+                            }
+                        </select>
+                    </div>
+
+                </div>
+
+                @*Player Button Group*@
+                <div class="col-1 m-0 p-0 d-flex align-middle">
+                    <div class="btn-group-vertical col m-0 p-0" role="group">
+                        <button class="fas fa-angle-double-right btn btn-outline-info" onclick="AddAllPlayers();">&nbsp;</button>
+                        <button class="fas fa-angle-right btn btn-outline-info" onclick="AddSelectedPlayers();">&nbsp;</button>
+                        <button class="fas fa-angle-left btn btn-outline-info" onclick="RemoveSelectedPlayers();">&nbsp;</button>
+                        <button class="fas fa-angle-double-left btn btn-outline-info" onclick="RemoveAllPlayers();">&nbsp;</button>
+                    </div>
+                </div>
+
+                @*Next Round Players*@
+                <div class="h5 col m-2 p-2 border border-secondary rounded">
+                    <div class="container">
+                        <div class="row">
+                            Next Round
+                        </div>
+                    </div>
+
+                    <div class="container">
+                        <select id="tournamentActivePlayersList" class="form-control col mt-2" size="@Model.AllPlayers.Count" multiple="multiple">
+                            @foreach (XWTWeb.Models.Player player in Model.NextRoundPlayers)
+                            {
+                                <option value="@player.Id">@player.Name</option>
+                            }
+                        </select>
+                    </div>
+
+                </div>
             </div>
-
         </div>
 
+
+        @*Rounds Column*@
         <div class="col">
             Rounds
         </div>
@@ -41,13 +87,53 @@
 
 <script type="text/javascript">
 
-    function PlayersBtnClick() {
+    $(document).ready(function () {
+        PlayersBtnClick(true);
+    });
+
+    function PlayersBtnClick(blnOnLoad) {
+        blnOnLoad = blnOnLoad || false;
+
+        var blnPlayerSelectClass = !$("#tournamentPlayerSelect").hasClass('show');
+
+        if (blnOnLoad) blnPlayerSelectClass = !blnPlayerSelectClass;
+
         //This triggers before collapse show has been added/removed, so works "opposite" here
-        if (!$("#tournamentPlayerSelect").hasClass('show')) {
-            $("#playerColumn").removeClass('col-1').addClass('col');
+        if (blnPlayerSelectClass) {
+            $("#playerColumn").removeClass('col-12 col-md-2 col-lg-1').addClass('col-12 col-md');
         } else {
-            $("#playerColumn").addClass('col-1').removeClass('col');
+            $("#playerColumn").addClass('col-12 col-md-2 col-lg-1').removeClass('col-12 col-md');
         }
+    }
+
+
+    //Players Add/Remove
+    function AddAllPlayers() {
+        $("#tournamentAllPlayersList").find('option').clone().appendTo("#tournamentActivePlayersList");
+        $("#tournamentAllPlayersList").empty(); 
+        SortSelect($("#tournamentActivePlayersList"));
+    }
+
+    function AddSelectedPlayers() {
+        $("#tournamentAllPlayersList option:selected").each(function () {
+            $(this).clone().appendTo("#tournamentActivePlayersList");
+            $(this).remove();
+        });
+        SortSelect($("#tournamentActivePlayersList"));
+    }
+
+    function RemoveAllPlayers() {
+        $("#tournamentActivePlayersList").find('option').clone().appendTo("#tournamentAllPlayersList");
+        $("#tournamentActivePlayersList").empty();    
+        SortSelect($("#tournamentAllPlayersList"));
+    }
+
+    function RemoveSelectedPlayers() {
+        $("#tournamentActivePlayersList option:selected").each(function () {
+            $(this).clone().appendTo("#tournamentAllPlayersList");
+            $(this).remove();
+        });
+        SortSelect($("#tournamentAllPlayersList"));
     }
 
 </script>
