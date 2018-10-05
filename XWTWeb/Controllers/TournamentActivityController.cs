@@ -16,15 +16,16 @@ namespace XWTWeb.Controllers
     {
         RestClient client = Utilities.InitializeRestClient();
 
+
+        static TournamentActivity tournamentActivity = new TournamentActivity();
+        static TournamentMain tournament = new TournamentMain();
+        static List<Player> playersAll = new List<Player>();
+        static List<Player> playersNextRound = new List<Player>();
+
         // GET: TournamentActivity
         public ActionResult Main(int id)
         {
 
-            TournamentActivity tournamentActivity = new TournamentActivity();
-
-            TournamentMain tournament = new TournamentMain();
-            List<Player> playersAll = new List<Player>();
-            List<Player> playersNextRound = new List<Player>();
 
             //Get Tournament Info
             try
@@ -74,11 +75,38 @@ namespace XWTWeb.Controllers
                 Console.Write(string.Format("TournamentActivityController.Main{0}Get Players Error:{1}", Environment.NewLine, ex.Message));
             }
 
+
             tournamentActivity.AllPlayers = playersAll;
             tournamentActivity.NextRoundPlayers = playersNextRound;
             tournamentActivity.TournamentMain = tournament;
 
             return View(tournamentActivity);
+        }
+
+        [HttpPost]
+        public PartialViewResult Main(TournamentActivity tournamentActivity)
+        {
+
+            return PartialView(tournamentActivity);
+        }
+
+        public ActionResult AddNewRound(string strTournActivity)
+        {
+
+            TournamentActivity result = JsonConvert.DeserializeObject<TournamentActivity>(strTournActivity);
+
+
+            TournamentMainRound round = new TournamentMainRound();
+            round.Number = 1;
+
+            result.TournamentMain.Rounds.Add(round);
+
+
+            tournamentActivity = result;
+            //UpdateModel<TournamentActivity>(result);
+
+            return View(tournamentActivity);
+            
         }
     }
 }

@@ -60,3 +60,8 @@ textarea {
     flex-shrink: 1;
     transition: all 400ms ease;
 }
+
+.text-left {
+    flex-shrink: 1;
+    width:0;
+}

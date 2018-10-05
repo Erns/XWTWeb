@@ -10,10 +10,10 @@
     <div class="row">
 
         @*Player Column*@
-        <div id="playerColumn" class="col-12 col-md">
+        <div id="playerColumn" class="col-12 col-md mr-1 pb-3">
             <div class="row">
-                <button class="col btn btn-secondary" data-toggle="collapse" data-target="#tournamentPlayerSelect" aria-expanded="true" aria-controls="tournamentPlayerSelect" onclick="PlayersBtnClick();">
-                    <h4 class="text-light">Players</h4>
+                <button id="playerColBtn" class="col btn btn-secondary text-left pt-0" style="font-size:x-large;" data-toggle="collapse" data-target="#tournamentPlayerSelect" aria-expanded="true" aria-controls="tournamentPlayerSelect" onclick="PlayersBtnClick();">
+                    Players
                 </button>
             </div>
             <div class="row collapse show" id="tournamentPlayerSelect">
@@ -24,7 +24,7 @@
                             <label class="col-12 col-lg">
                                 All Players
                             </label>
-                            <select class="form-control col"></select>
+                            <select class="form-control-sm col"></select>
                         </div>
                     </div>*@
 
@@ -78,8 +78,45 @@
 
 
         @*Rounds Column*@
-        <div class="col">
-            Rounds
+        <div id="roundColumn" onclick="RoundsFocus();" class="col border border-secondary rounded">
+            <label style="font-size:x-large;">Rounds</label>
+
+            <ul class="nav nav-tabs">
+                @foreach (XWTWeb.Models.TournamentMainRound round in Model.TournamentMain.Rounds)
+                {
+                <li class="nav-item">
+                    @if (round.Number == Model.TournamentMain.Rounds.Count)
+                    {
+                        <a class="nav-link active" data-toggle="tab" href="@round.Id">Round @round.Number</a>
+                    }
+                    else
+                    {
+                        <a class="nav-link" data-toggle="tab" href="@round.Id">Round @round.Number</a>
+                    }
+                </li>
+                }
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Options</a>
+                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 42px, 0px);">
+                        <a class="dropdown-item" href="#" onclick="StartNextRound();">Start Next Round</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Separated link</a>
+                    </div>
+                </li>
+            </ul>
+
+            <div id="tournamentRoundTabContent" class="tab-content">
+                @foreach (XWTWeb.Models.TournamentMainRound round in Model.TournamentMain.Rounds)
+                {
+                    <div class="container">
+                        This is round @round.Number
+                    </div>
+                }
+            </div>
+
         </div>
     </div>
 </div>
@@ -99,10 +136,13 @@
         if (blnOnLoad) blnPlayerSelectClass = !blnPlayerSelectClass;
 
         //This triggers before collapse show has been added/removed, so works "opposite" here
+        //col-12 col-md-2 col-lg-1
         if (blnPlayerSelectClass) {
-            $("#playerColumn").removeClass('col-12 col-md-2 col-lg-1').addClass('col-12 col-md');
+            $("#playerColumn").addClass('col-md');
+            $("#playerColBtn").addClass('btn-secondary').removeClass('btn-outline-secondary');
         } else {
-            $("#playerColumn").addClass('col-12 col-md-2 col-lg-1').removeClass('col-12 col-md');
+            $("#playerColumn").removeClass('col-md');
+            $("#playerColBtn").removeClass('btn-secondary').addClass('btn-outline-secondary');
         }
     }
 
@@ -134,6 +174,44 @@
             $(this).remove();
         });
         SortSelect($("#tournamentAllPlayersList"));
+    }
+
+    function StartNextRound() {
+        //Make sure we have players for the next round
+        if ($("#tournamentActivePlayersList option").length == 0) {
+            bootbox.alert("Please add players to the Next Round");
+
+            //Show Players section if not already visible
+            if (!$("#tournamentPlayerSelect").is(':visible')) {
+                $("#tournamentPlayerSelect").collapse('show');
+                PlayersBtnClick();
+            }
+            return false;
+        }
+
+
+        var model = @Html.Raw(Json.Encode(Model))
+
+        //Update player info
+        $.ajax({
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            dataType: "json",
+            type: "POST",
+            url: "/TournamentActivity/AddNewRound",
+            data: { strTournActivity: JSON.stringify(model) },
+            complete: function (data) {
+                location.reload();
+            }
+        });
+    }
+
+    function RoundsFocus() {
+
+        //Hide Players section if already visible
+        if ($("#tournamentPlayerSelect").is(':visible')) {
+            PlayersBtnClick();
+            $("#tournamentPlayerSelect").collapse('hide');
+        }
     }
 
 </script>
