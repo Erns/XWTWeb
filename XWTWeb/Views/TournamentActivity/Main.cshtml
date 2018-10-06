@@ -189,8 +189,19 @@
             return false;
         }
 
+        var jsonData = [];
 
-        var model = @Html.Raw(Json.Encode(Model))
+        $("#tournamentActivePlayersList option").each(function () {
+            var player = {
+                Id: 0,
+                TournamentId: 0,
+                PlayerId: $(this).val(),
+                PlayerName: $(this).text(),
+                Active: true
+            };
+            jsonData.push(player);
+        });
+
 
         //Update player info
         $.ajax({
@@ -198,7 +209,7 @@
             dataType: "json",
             type: "POST",
             url: "/TournamentActivity/AddNewRound",
-            data: { strTournActivity: JSON.stringify(model) },
+            data: { activePlayers: JSON.stringify(jsonData) },
             complete: function (data) {
                 location.reload();
             }
@@ -208,7 +219,7 @@
     function RoundsFocus() {
 
         //Hide Players section if already visible
-        if ($("#tournamentPlayerSelect").is(':visible')) {
+        if ($("#tournamentPlayerSelect").is(':visible') && $("#tournamentActivePlayersList option").length > 0) {
             PlayersBtnClick();
             $("#tournamentPlayerSelect").collapse('hide');
         }

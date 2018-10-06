@@ -53,7 +53,7 @@ namespace XWTWeb.Models
         public int Id { get; set; }
 
         //FK
-        public int TournmentId { get; set; }
+        public int TournamentId { get; set; }
 
         //FK
         public int PlayerId { get; set; }
@@ -64,13 +64,13 @@ namespace XWTWeb.Models
         public string PlayerName { get; set; }
         public bool Active { get; set; } = true;
         public bool Bye { get; set; } = false;
-        public int ByeCount { get; set; }
+        public int ByeCount { get; set; } = 0;
 
-        public int RoundsPlayed { get; set; }
-        public int Rank { get; set; }
-        public int Score { get; set; }
-        public int MOV { get; set; }
-        public decimal SOS { get; set; }
+        public int RoundsPlayed { get; set; } = 0;
+        public int Rank { get; set; } = 0;
+        public int Score { get; set; } = 0;
+        public int MOV { get; set; } = 0;
+        public decimal SOS { get; set; } = 0;
 
     }
 
@@ -80,7 +80,7 @@ namespace XWTWeb.Models
         public int Id { get; set; }
 
         //FK
-        public int TournmentId { get; set; }
+        public int TournamentId { get; set; }
         public int Number { get; set; }
         public bool Swiss { get; set; } = true;
         public DateTime RoundTimeEnd { get; set; }
