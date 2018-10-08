@@ -21,15 +21,16 @@ namespace XWTWeb.Models
 
         public List<TournamentMainRound> Rounds { get; set; } = new List<TournamentMainRound>();
 
-        public string ActivePlayersList()
+        public List<int> ActivePlayersList()
         {
-            List<string> lstIDs = new List<string>();
+            List<int> lstIDs = new List<int>();
             foreach (TournamentMainPlayer item in Players)
             {
-                if (item.Active) lstIDs.Add(item.PlayerId.ToString());
+                if (item.Active) lstIDs.Add(item.PlayerId);
             }
 
-            return String.Join(",", lstIDs.ToArray());
+            //return String.Join(",", lstIDs.ToArray());
+            return lstIDs;
         }
 
         public TournamentMain()

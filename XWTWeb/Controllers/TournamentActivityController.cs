@@ -28,16 +28,17 @@ namespace XWTWeb.Controllers
         {
             tournamentId = id;
 
-            objTournActivity = new TournamentActivity();
-            objTournMain = new TournamentMain();
+            objTournActivity = new TournamentActivity();            
             lstPlayersAll = new List<Player>();
 
-            List<Player> playersNextRound = new List<Player>();
+            List<Player> lstPlayersNextRd = new List<Player>();
+            List<int> lstActivePlayers = new List<int>();
 
             //Get Tournament Info
             try
             {
-                if (id > 0)
+                //TODO:  Likely need to pull new tournament info every time, but for the sake of debug doing this
+                if (id > 0 && objTournMain.Id != id)
                 {
                     var request = new RestRequest("Tournaments/{userid}/{id}", Method.GET);
                     request.AddUrlSegment("userid", Utilities.CurrentUser.Id);
@@ -60,6 +61,8 @@ namespace XWTWeb.Controllers
                 Console.Write(string.Format("TournamentActivityController.Main{0}Get Tournament Error:{1}", Environment.NewLine, ex.Message));
             }
 
+            lstActivePlayers = objTournMain.ActivePlayersList();
+
             //Get Players
             try
             {
@@ -73,7 +76,14 @@ namespace XWTWeb.Controllers
                 List<Player> result = JsonConvert.DeserializeObject<List<Player>>(JsonConvert.DeserializeObject(content).ToString());
                 foreach (Player player in result)
                 {
-                    lstPlayersAll.Add(player);
+                    if (lstActivePlayers.Contains(player.Id))
+                    {
+                        lstPlayersNextRd.Add(player);
+                    }
+                    else
+                    {
+                        lstPlayersAll.Add(player);
+                    }
                 }
             }
             catch (Exception ex)
@@ -81,13 +91,14 @@ namespace XWTWeb.Controllers
                 Console.Write(string.Format("TournamentActivityController.Main{0}Get Players Error:{1}", Environment.NewLine, ex.Message));
             }
 
-
             objTournActivity.AllPlayers = lstPlayersAll;
-            objTournActivity.NextRoundPlayers = playersNextRound;
+            objTournActivity.NextRoundPlayers = lstPlayersNextRd;
             objTournActivity.TournamentMain = objTournMain;
 
             return View(objTournActivity);
         }
+
+        #region "Setup Round"
 
         public ActionResult AddNewRound(string activePlayers)
         {
@@ -157,7 +168,7 @@ namespace XWTWeb.Controllers
             //objTournActivity = result;
             //UpdateModel<TournamentActivity>(result);
 
-            //StartRound(true, 0);
+            StartRound(true, 0);
 
             return View(objTournActivity);
             
@@ -185,7 +196,8 @@ namespace XWTWeb.Controllers
             {
                 if (roundTable.Player1Id != 0 && roundTable.Player2Id != 0)
                 {
-                    setRoundTableNames(ref roundTable);
+                    //setRoundTableNames(ref roundTable);
+                    roundTable.TableName = string.Format("{0} vs {1}", roundTable.Player1Name, roundTable.Player2Name);
                     round.Tables.Add(roundTable);
                     roundTable = new TournamentMainRoundTable();
                 }
@@ -194,10 +206,12 @@ namespace XWTWeb.Controllers
                 {
                     roundTable.Number = round.Tables.Count + 1;
                     roundTable.Player1Id = player.PlayerId;
+                    roundTable.Player1Name = player.PlayerName;
                 }
                 else if (roundTable.Player2Id == 0)
                 {
                     roundTable.Player2Id = player.PlayerId;
+                    roundTable.Player2Name = player.PlayerName;
                 }
             }
 
@@ -209,7 +223,7 @@ namespace XWTWeb.Controllers
                 roundTable.Player1Winner = true;
             }
 
-            setRoundTableNames(ref roundTable);
+            roundTable.TableName = string.Format("{0} vs {1}", roundTable.Player1Name, roundTable.Player2Name);
             round.Tables.Add(roundTable);
 
             //If a manual bye (such as first-round byes at a tournament), add these players now
@@ -224,10 +238,12 @@ namespace XWTWeb.Controllers
                     roundTable.Bye = true;
                     roundTable.Player1Score = objTournMain.MaxPoints / 2;
                     roundTable.Player1Winner = true;
-                    setRoundTableNames(ref roundTable);
+                    roundTable.TableName = string.Format("{0} vs {1}", roundTable.Player1Name, "N/A");
                     round.Tables.Add(roundTable);
                 }
             }
+
+            objTournMain.Rounds.Add(round);
 
             ////Add/Save the round
             //using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
@@ -247,7 +263,7 @@ namespace XWTWeb.Controllers
 
         }
 
-
+        #endregion
 
         #region Setup Player Methods
 
@@ -262,6 +278,7 @@ namespace XWTWeb.Controllers
                 {
                     TournamentMainPlayer roundPlayer = new TournamentMainPlayer();
                     roundPlayer.PlayerId = player.PlayerId;
+                    roundPlayer.PlayerName = player.PlayerName;
                     roundPlayer.Score = player.Score;
                     roundPlayer.OpponentIds = player.OpponentIds;
 
@@ -421,7 +438,7 @@ namespace XWTWeb.Controllers
 
             //    roundTable.Player1Name = strPlayer1Name;
             //    roundTable.Player2Name = strPlayer2Name;
-            //    roundTable.TableName = string.Format("{0} vs {1}", strPlayer1Name, strPlayer2Name);
+              //  roundTable.TableName = string.Format("{0} vs {1}", roundTable.Player1Name, roundTable.Player2Name);
             //}
         }
         #endregion

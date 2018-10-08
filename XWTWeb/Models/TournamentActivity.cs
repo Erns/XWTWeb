@@ -10,5 +10,9 @@ namespace XWTWeb.Models
         public List<Player> AllPlayers { get; set; }
         public List<Player> NextRoundPlayers { get; set; }
         public TournamentMain TournamentMain { get; set; }
+        public int GetPlayerTotal()
+        {
+            return AllPlayers.Count + NextRoundPlayers.Count;
+        }
     }
 }

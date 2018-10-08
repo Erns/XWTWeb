@@ -11,14 +11,14 @@
 
         @*Player Column*@
         <div id="playerColumn" class="col-12 col-md mr-1 pb-3">
-            <div class="row">
+            <div class="row bg-white">
                 <button id="playerColBtn" class="col btn btn-secondary text-left pt-0" style="font-size:x-large;" data-toggle="collapse" data-target="#tournamentPlayerSelect" aria-expanded="true" aria-controls="tournamentPlayerSelect" onclick="PlayersBtnClick();">
                     Players
                 </button>
             </div>
-            <div class="row collapse show" id="tournamentPlayerSelect">
+            <div class="row collapse @(Model.TournamentMain.Rounds.Count == 0 ? "show" : "")" id="tournamentPlayerSelect">
                 @*All Players*@
-                <div class="h5 col-5 m-2 p-2 border border-secondary rounded">
+                <div class="h5 col-5 m-2 p-2 border border-secondary rounded bg-white">
                     @*<div class="container">
                         <div class="row">
                             <label class="col-12 col-lg">
@@ -35,7 +35,7 @@
                     </div>
 
                     <div class="container">
-                        <select id="tournamentAllPlayersList" class="form-control col mt-2" size="@Model.AllPlayers.Count" multiple="multiple">
+                        <select id="tournamentAllPlayersList" class="form-control col mt-2" size="@Model.GetPlayerTotal()" multiple="multiple">
                             @foreach (XWTWeb.Models.Player player in Model.AllPlayers)
                             {
                                 <option value="@player.Id">@player.Name</option>
@@ -56,7 +56,7 @@
                 </div>
 
                 @*Next Round Players*@
-                <div class="h5 col m-2 p-2 border border-secondary rounded">
+                <div class="h5 col m-2 p-2 border border-secondary rounded bg-white">
                     <div class="container">
                         <div class="row">
                             Next Round
@@ -64,7 +64,7 @@
                     </div>
 
                     <div class="container">
-                        <select id="tournamentActivePlayersList" class="form-control col mt-2" size="@Model.AllPlayers.Count" multiple="multiple">
+                        <select id="tournamentActivePlayersList" class="form-control col mt-2" size="@Model.GetPlayerTotal()" multiple="multiple">
                             @foreach (XWTWeb.Models.Player player in Model.NextRoundPlayers)
                             {
                                 <option value="@player.Id">@player.Name</option>
@@ -78,7 +78,7 @@
 
 
         @*Rounds Column*@
-        <div id="roundColumn" onclick="RoundsFocus();" class="col border border-secondary rounded">
+        <div id="roundColumn" onclick="" class="col border border-secondary rounded bg-white">
             <label style="font-size:x-large;">Rounds</label>
 
             <ul class="nav nav-tabs">
@@ -87,11 +87,11 @@
                 <li class="nav-item">
                     @if (round.Number == Model.TournamentMain.Rounds.Count)
                     {
-                        <a class="nav-link active" data-toggle="tab" href="@round.Id">Round @round.Number</a>
+                        <a class="nav-link active" data-toggle="tab" href="@round.Number">Round @round.Number</a>
                     }
                     else
                     {
-                        <a class="nav-link" data-toggle="tab" href="@round.Id">Round @round.Number</a>
+                        <a class="nav-link" data-toggle="tab" href="@round.Number">Round @round.Number</a>
                     }
                 </li>
                 }
@@ -99,7 +99,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Options</a>
                     <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 42px, 0px);">
-                        <a class="dropdown-item" href="#" onclick="StartNextRound();">Start Next Round</a>
+                        <a class="dropdown-item" href="#" onclick="StartNextRound(event);">Start Next Round</a>
                         <a class="dropdown-item" href="#">Another action</a>
                         <a class="dropdown-item" href="#">Something else here</a>
                         <div class="dropdown-divider"></div>
@@ -108,12 +108,50 @@
                 </li>
             </ul>
 
+            @*Round's Tables*@
             <div id="tournamentRoundTabContent" class="tab-content">
                 @foreach (XWTWeb.Models.TournamentMainRound round in Model.TournamentMain.Rounds)
                 {
-                    <div class="container">
-                        This is round @round.Number
+                <div class="tab-pane fade @(round.Number == 1 ? "show active" : "" ) " id="@round.Number">
+                    <div class="container-fluid pt-3">
+                        <table class="table table-striped table-hover">
+                            <tbody>
+
+                                @foreach (XWTWeb.Models.TournamentMainRoundTable table in round.Tables)
+                                {
+                                <tr>
+                                    <td>
+                                        <div class="row">
+                                            <label class="col h5">
+                                                Table #@table.Number@(table.Bye ? " (BYE)" : "") - @table.TableName
+                                            </label>
+                                        </div>
+                                        <div class="row pl-1 pl-sm-5">
+
+                                            <button class="btn p-1 mr-2 align-self-center @(table.Player1Winner ? "btn-outline-success fas fa-check" : "btn-outline-danger fas fa-times") @(table.Bye || !table.ScoreTied ? "disabled" : "")"></button>
+
+                                            <div class="col-3 col-sm-2 col-lg-1 p-0 text-center">
+                                                <input id="@round.Number-@table.Number-Player1Score" type="number" min="0" max="@Model.TournamentMain.MaxPoints" value="@table.Player1Score" class="form-control col-auto" data-player="@table.Player1Id" data-roundid="@round.Id" data-tableid="@table.Id" data-save="score" @(table.Bye ? "disabled" : "") />
+                                                <label class="h6">@table.Player1Name</label>
+                                            </div>
+                                            <div class="col-1 text-center font-italic align-self-center p-0 h5">
+                                                vs.
+                                            </div>
+                                            <div class="col-3 col-sm-2 col-lg-1 p-0 text-center">
+                                                <input id="@round.Number-@table.Number-Player2Score" type="number" min="0" max="@Model.TournamentMain.MaxPoints" value="@table.Player2Score" class="form-control col-auto" data-player="@table.Player2Id" data-roundid="@round.Id" data-tableid="@table.Id" data-save="score" @(table.Bye ? "disabled" : "") />
+                                                <label class="h6">@table.Player2Name</label>
+                                            </div>
+
+                                            <button class="btn p-1 ml-2 align-self-center @(table.Player2Winner ? "btn-outline-success fas fa-check" : "btn-outline-danger fas fa-times") @(table.Bye || !table.ScoreTied ? "disabled" : "")"></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                }
+
+                            </tbody>
+                        </table>
                     </div>
+                </div>
                 }
             </div>
 
@@ -176,7 +214,9 @@
         SortSelect($("#tournamentAllPlayersList"));
     }
 
-    function StartNextRound() {
+    function StartNextRound(e) {
+        e.stopPropagation();
+
         //Make sure we have players for the next round
         if ($("#tournamentActivePlayersList option").length == 0) {
             bootbox.alert("Please add players to the Next Round");
