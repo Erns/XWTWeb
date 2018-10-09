@@ -10,7 +10,7 @@
     <div class="row">
 
         @*Player Column*@
-        <div id="playerColumn" class="col-12 col-md mr-1 pb-3">
+        <div id="playerColumn" class="col-12 col-lg mr-1 pb-3">
             <div class="row bg-white">
                 <button id="playerColBtn" class="col btn btn-secondary text-left pt-0" style="font-size:x-large;" data-toggle="collapse" data-target="#tournamentPlayerSelect" aria-expanded="true" aria-controls="tournamentPlayerSelect" onclick="PlayersBtnClick();">
                     Players
@@ -78,7 +78,7 @@
 
 
         @*Rounds Column*@
-        <div id="roundColumn" onclick="" class="col border border-secondary rounded bg-white">
+        <div id="roundColumn" onclick="" class="col border border-secondary rounded bg-white mb-3">
             <label style="font-size:x-large;">Rounds</label>
 
             <ul class="nav nav-tabs">
@@ -100,10 +100,9 @@
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Options</a>
                     <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 42px, 0px);">
                         <a class="dropdown-item" href="#" onclick="StartNextRound(event);">Start Next Round</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
+                        <a class="dropdown-item" href="#">Start Top Cut</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Separated link</a>
+                        <a class="dropdown-item" href="#" onclick="DeleteLastRound(event, @Model.TournamentMain.Rounds.Count);">Delete Last Round</a>
                     </div>
                 </li>
             </ul>
@@ -128,21 +127,21 @@
                                         </div>
                                         <div class="row pl-1 pl-sm-5">
 
-                                            <button class="btn p-1 mr-2 align-self-center @(table.Player1Winner ? "btn-outline-success fas fa-check" : "btn-outline-danger fas fa-times") @(table.Bye || !table.ScoreTied ? "disabled" : "")"></button>
+                                            <button id="@round.Number-@table.Number-Player1Winner" class="btn p-1 mr-2 align-self-center @(table.Player1Winner ? "btn-outline-success fas fa-check" : "btn-outline-danger fas fa-times")" @(table.Bye || !table.ScoreTied ? "disabled" : "") data-playerid="@table.Player1Id" data-playernumber="1" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-winner="@table.Player1Winner" onclick="TogglePlayerWinner(this);"></button>
 
-                                            <div class="col-3 col-sm-2 col-lg-1 p-0 text-center">
-                                                <input id="@round.Number-@table.Number-Player1Score" type="number" min="0" max="@Model.TournamentMain.MaxPoints" value="@table.Player1Score" class="form-control col-auto" data-player="@table.Player1Id" data-roundid="@round.Id" data-tableid="@table.Id" data-save="score" @(table.Bye ? "disabled" : "") />
+                                            <div class="col-3 col-sm-2 col-xl-1 p-0 text-center">
+                                                <input id="@round.Number-@table.Number-Player1Score" type="number" min="0" max="@Model.TournamentMain.MaxPoints" value="@table.Player1Score" class="form-control col pl-2 pr-0" data-playerid="@table.Player1Id" data-playernumber="1" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-save="score" @(table.Bye ? "disabled" : "") onchange="UpdatePlayerScores(this, @Model.TournamentMain.MaxPoints);" />
                                                 <label class="h6">@table.Player1Name</label>
                                             </div>
                                             <div class="col-1 text-center font-italic align-self-center p-0 h5">
                                                 vs.
                                             </div>
-                                            <div class="col-3 col-sm-2 col-lg-1 p-0 text-center">
-                                                <input id="@round.Number-@table.Number-Player2Score" type="number" min="0" max="@Model.TournamentMain.MaxPoints" value="@table.Player2Score" class="form-control col-auto" data-player="@table.Player2Id" data-roundid="@round.Id" data-tableid="@table.Id" data-save="score" @(table.Bye ? "disabled" : "") />
+                                            <div class="col-3 col-sm-2 col-xl-1 p-0 text-center">
+                                                <input id="@round.Number-@table.Number-Player2Score" type="number" min="0" max="@Model.TournamentMain.MaxPoints" value="@table.Player2Score" class="form-control col pl-2 pr-0" data-playerid="@table.Player2Id" data-playernumber="2" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-save="score" @(table.Bye ? "disabled" : "") onchange="UpdatePlayerScores(this, @Model.TournamentMain.MaxPoints);" />
                                                 <label class="h6">@table.Player2Name</label>
                                             </div>
 
-                                            <button class="btn p-1 ml-2 align-self-center @(table.Player2Winner ? "btn-outline-success fas fa-check" : "btn-outline-danger fas fa-times") @(table.Bye || !table.ScoreTied ? "disabled" : "")"></button>
+                                            <button id="@round.Number-@table.Number-Player2Winner" class="btn p-1 ml-2 align-self-center @(table.Player2Winner ? "btn-outline-success fas fa-check" : "btn-outline-danger fas fa-times")" @(table.Bye || !table.ScoreTied ? "disabled" : "")  data-playerid="@table.Player2Id" data-playernumber="2" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-winner="@table.Player2Winner" onclick="TogglePlayerWinner(this);"></button>
                                         </div>
                                     </td>
                                 </tr>
@@ -156,11 +155,36 @@
             </div>
 
         </div>
+
+        @*Standings Column*@
+        <div id="standingsColumn" class="col-12 col-md-4 border border-secondary rounded bg-white mb-3 ml-md-3">
+            <label style="font-size:x-large;">Standings</label>
+
+            <table class="table table-striped table-light table-hover table-responsive-xl">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Player Name</th>
+                        <th>Score</th>
+                        <th>MOV</th>
+                        <th>SoS</th>
+                    </tr>
+                </thead>
+                <tbody id="standingsTBody">
+
+                    @Html.Raw(Model.GetStandings())
+
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 
 <script type="text/javascript">
+
+    var strWinClasses = "btn-outline-success fas fa-check"
+        , strLoseClasses = "btn-outline-danger fas fa-times";
 
     $(document).ready(function () {
         PlayersBtnClick(true);
@@ -174,18 +198,18 @@
         if (blnOnLoad) blnPlayerSelectClass = !blnPlayerSelectClass;
 
         //This triggers before collapse show has been added/removed, so works "opposite" here
-        //col-12 col-md-2 col-lg-1
         if (blnPlayerSelectClass) {
-            $("#playerColumn").addClass('col-md');
+            $("#playerColumn").addClass('col-lg');
             $("#playerColBtn").addClass('btn-secondary').removeClass('btn-outline-secondary');
+            $("#standingsColumn").removeClass('col-md-4').removeClass('ml-md-3');
         } else {
-            $("#playerColumn").removeClass('col-md');
+            $("#playerColumn").removeClass('col-lg');
             $("#playerColBtn").removeClass('btn-secondary').addClass('btn-outline-secondary');
+            $("#standingsColumn").addClass('col-md-4').addClass('ml-md-3');
         }
     }
 
-
-    //Players Add/Remove
+    //Players - Add/Remove
     function AddAllPlayers() {
         $("#tournamentAllPlayersList").find('option').clone().appendTo("#tournamentActivePlayersList");
         $("#tournamentAllPlayersList").empty(); 
@@ -214,6 +238,7 @@
         SortSelect($("#tournamentAllPlayersList"));
     }
 
+    //Rounds - Add/Remove
     function StartNextRound(e) {
         e.stopPropagation();
 
@@ -256,12 +281,163 @@
         });
     }
 
+    function DeleteLastRound(e, intRoundCount) {
+        e.stopPropagation();
+
+        if (intRoundCount == 0) {
+            bootbox.alert('There are no rounds to delete!');
+            return false;
+        }
+
+        bootbox.confirm({
+            message: "Are you sure you want to delete the last round listed (this cannot be undone)?",
+            callback: function (result) {
+                if (result) {
+                    bootbox.alert('deleted');
+                }
+            }
+        });
+    }
+
     function RoundsFocus() {
 
         //Hide Players section if already visible
         if ($("#tournamentPlayerSelect").is(':visible') && $("#tournamentActivePlayersList option").length > 0) {
             PlayersBtnClick();
             $("#tournamentPlayerSelect").collapse('hide');
+        }
+    }
+
+    function UpdatePlayerScores(inpt, intMaxPts) {
+
+        var intPlayerId = $(inpt).data('playerid')
+            , intPlayerNumber = $(inpt).data('playernumber')
+            , intRoundId = $(inpt).data('roundid')
+            , intTableId = $(inpt).data('tableid')
+            , intRoundNumber = $(inpt).data('roundnumber')
+            , intTableNumber = $(inpt).data('tablenumber')
+            , intPoints = parseInt($(inpt).val(), 10);
+
+        //Determine which round and table we're dealing with, set which values we're to search for 
+        var intRoundField = intRoundNumber
+            , intTableField = intTableNumber;
+
+        //Modify to ensure points are within 0 and max points
+        if (intPoints < 0)
+            $(inpt).val(0);
+        else if (intPoints > intMaxPts)
+            $(inpt).val(intMaxPts);
+        else
+            $(inpt).val(intPoints);
+
+
+        var intPlayer1Score = parseInt($("#" + intRoundField + "-" + intTableField + "-Player1Score").val(), 10)
+            , intPlayer2Score = parseInt($("#" + intRoundField + "-" + intTableField + "-Player2Score").val(), 10);
+
+        //Enabled/Disable the manual winner flag
+        var $inptPlayer1Winner = $("#" + intRoundField + "-" + intTableField + "-Player1Winner")
+            , $inptPlayer2Winner = $("#" + intRoundField + "-" + intTableField + "-Player2Winner");
+
+        if (intPlayer1Score != intPlayer2Score) {
+            $inptPlayer1Winner.prop('disabled', true).attr('disabled', true);
+            $inptPlayer2Winner.prop('disabled', true).attr('disabled', true);
+        }
+        else {
+            $inptPlayer1Winner.prop('disabled', false).attr('disabled', false);
+            $inptPlayer2Winner.prop('disabled', false).attr('disabled', false);
+        }
+
+        //Update win/lose indicators as needed
+        if (intPlayer1Score > intPlayer2Score) {
+            SetPlayerWinner($inptPlayer1Winner);
+            SetPlayerLoser($inptPlayer2Winner);
+        }
+        else if (intPlayer2Score > intPlayer1Score) {
+            SetPlayerWinner($inptPlayer2Winner);
+            SetPlayerLoser($inptPlayer1Winner);
+        }
+
+        UpdateTableScoreDB(intTableId, intRoundId, intRoundField, intTableField);
+
+    }
+
+    function TogglePlayerWinner(btn) {
+        var intPlayerId = $(btn).data('playerid')
+            , intPlayerNumber = $(btn).data('playernumber')
+            , intRoundId = $(btn).data('roundid')
+            , intTableId = $(btn).data('tableid')
+            , intRoundNumber = $(btn).data('roundnumber')
+            , intTableNumber = $(btn).data('tablenumber');
+
+        //Determine which round and table we're dealing with, set which values we're to search for 
+        var intRoundField = intRoundNumber
+            , intTableField = intTableNumber;
+
+        var $inptPlayer1Winner = $("#" + intRoundField + "-" + intTableField + "-Player1Winner")
+            , $inptPlayer2Winner = $("#" + intRoundField + "-" + intTableField + "-Player2Winner");
+
+        if (intPlayerNumber == 1) {
+            SetPlayerWinner($inptPlayer1Winner);
+            SetPlayerLoser($inptPlayer2Winner);
+        }
+        else if (intPlayerNumber == 2) {
+            SetPlayerWinner($inptPlayer2Winner);
+            SetPlayerLoser($inptPlayer1Winner);
+        }
+
+        UpdateTableScoreDB(intTableId, intRoundId, intRoundField, intTableField);
+    }
+
+    function UpdateTableScoreDB(intTableId, intRoundId, intRoundField, intTableField) {
+        //Update player score on database
+
+        var intPlayer1Score = parseInt($("#" + intRoundField + "-" + intTableField + "-Player1Score").val(), 10)
+            , intPlayer2Score = parseInt($("#" + intRoundField + "-" + intTableField + "-Player2Score").val(), 10);
+
+        var $inptPlayer1Winner = $("#" + intRoundField + "-" + intTableField + "-Player1Winner")
+            , $inptPlayer2Winner = $("#" + intRoundField + "-" + intTableField + "-Player2Winner");
+
+        var table = {
+            Id: intTableId
+            , RoundId: intRoundId
+            , ScoreTied: (intPlayer1Score == intPlayer2Score ? true : false)
+            , Player1Id: $("#" + intRoundField + "-" + intTableField + "-Player1Score").data('playerid')
+            , Player1Score: intPlayer1Score
+            , Player1Winner: $inptPlayer1Winner.data('winner')
+            , Player2Id: $("#" + intRoundField + "-" + intTableField + "-Player2Score").data('playerid')
+            , Player2Score: intPlayer2Score
+            , Player2Winner: $inptPlayer2Winner.data('winner')
+        };
+
+        $.ajax({
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            dataType: "json",
+            type: "POST",
+            url: "/TournamentActivity/UpdateTableData",
+            data: { table: JSON.stringify(table) },
+            complete: function (data) {
+                //location.reload();
+                debugger
+                $("#standingsTBody").html(data.responseText);
+            }
+        });
+    }
+
+    function SetPlayerWinner(btn) {
+        if (btn.hasClass(strLoseClasses)) {
+            btn.removeClass(strLoseClasses);
+            btn.addClass(strWinClasses);
+            btn.data('winner', 'True');
+            btn.attr('data-winner', 'True');
+        }
+    }
+
+    function SetPlayerLoser(btn) {
+        if (btn.hasClass(strWinClasses)) {
+            btn.removeClass(strWinClasses);
+            btn.addClass(strLoseClasses);
+            btn.data('winner', 'False');
+            btn.attr('data-winner', 'False');
         }
     }
 

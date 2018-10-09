@@ -71,7 +71,8 @@ namespace XWTWeb.Classes
             //Reset and calculate each player's score
             foreach (TournamentMainPlayer player in objTournMain.Players)
             {
-                dctPlayers.Add(player.Id, new TournamentMainPlayer());
+                if (!dctPlayers.ContainsKey(player.Id))
+                    dctPlayers.Add(player.Id, new TournamentMainPlayer());
 
                 player.MOV = 0;
                 player.RoundsPlayed = 0;

@@ -22,7 +22,8 @@ namespace XWTWeb.Controllers
 
         static int tournamentId = 0;
 
-
+        #region Main
+      
         // GET: TournamentActivity
         public ActionResult Main(int id)
         {
@@ -91,14 +92,21 @@ namespace XWTWeb.Controllers
                 Console.Write(string.Format("TournamentActivityController.Main{0}Get Players Error:{1}", Environment.NewLine, ex.Message));
             }
 
+            //Set standings when loading page
+            //Utilities.CalculatePlayerScores(ref objTournMain);
+
+            //Set initial info
             objTournActivity.AllPlayers = lstPlayersAll;
             objTournActivity.NextRoundPlayers = lstPlayersNextRd;
+            //objTournActivity.Standings = objTournMain.Players.OrderBy(obj => obj.Rank).ToList();
             objTournActivity.TournamentMain = objTournMain;
 
             return View(objTournActivity);
         }
 
-        #region "Setup Round"
+        #endregion
+
+        #region Setup Round
 
         public ActionResult AddNewRound(string activePlayers)
         {
@@ -412,35 +420,55 @@ namespace XWTWeb.Controllers
 
         #endregion
 
-        #region Page-Specific Utilities
+        #region Update Table Info
 
-        private void setRoundTableNames(ref TournamentMainRoundTable roundTable)
+        public string UpdateTableData(string table)
         {
-            //using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
-            //{
+            TournamentMainRoundTable result = JsonConvert.DeserializeObject<TournamentMainRoundTable>(table);
 
-            //    Player player;
+            try
+            {
 
-            //    string strPlayer1Name = "N/A";
-            //    string strPlayer2Name = "N/A";
 
-            //    if (roundTable.Player1Id > 0)
-            //    {
-            //        player = conn.Get<Player>(roundTable.Player1Id);
-            //        strPlayer1Name = player.Name;
-            //    }
+                //var request = new RestRequest("Players/{userid}", Method.PUT);
+                //request.AddUrlSegment("userid", Utilities.CurrentUser.Id);
+                //request.AddJsonBody(JsonConvert.SerializeObject(result));
 
-            //    if (roundTable.Player2Id > 0)
-            //    {
-            //        player = conn.Get<Player>(roundTable.Player2Id);
-            //        strPlayer2Name = player.Name;
-            //    }
+                //// execute the request
+                //IRestResponse response = client.Execute(request);
+                //var content = response.Content; // raw content as string
 
-            //    roundTable.Player1Name = strPlayer1Name;
-            //    roundTable.Player2Name = strPlayer2Name;
-              //  roundTable.TableName = string.Format("{0} vs {1}", roundTable.Player1Name, roundTable.Player2Name);
-            //}
+                foreach (TournamentMainRound round in objTournMain.Rounds)
+                {
+                    if (round.Id == result.RoundId)
+                    {
+                        foreach (TournamentMainRoundTable rdTable in round.Tables)
+                        {
+                            if (rdTable.Id == result.Id)
+                            {
+                                rdTable.Player1Score = result.Player1Score;
+                                rdTable.Player1Winner = result.Player1Winner;
+                                rdTable.Player2Score = result.Player2Score;
+                                rdTable.Player2Winner = result.Player2Winner;
+                                rdTable.ScoreTied = result.ScoreTied;
+                            }
+                        }
+                        break;
+                    }
+                }
+
+                return objTournActivity.GetStandings();
+            }
+            catch (Exception ex)
+            {
+                Console.Write(string.Format("TournamentActivityController.UpdateTableData{0}Error:{1}", Environment.NewLine, ex.Message));
+            }
+
+
+            return "";
+
         }
+
         #endregion
     }
 }

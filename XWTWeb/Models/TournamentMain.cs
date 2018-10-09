@@ -100,7 +100,7 @@ namespace XWTWeb.Models
         public int RoundId { get; set; }
         public int Number { get; set; }
         public string TableName { get; set; }
-        public bool ScoreTied { get; set; } = false;
+        public bool ScoreTied { get; set; } = true;
         public bool Bye { get; set; }
 
         //Player 1 Info
