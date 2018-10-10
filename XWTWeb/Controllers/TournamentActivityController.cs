@@ -158,7 +158,7 @@ namespace XWTWeb.Controllers
                 }
             }
 
-            var request = new RestRequest("Tournaments/{userid}/{id}", Method.PUT);
+            var request = new RestRequest("TournamentsPlayers/{userid}/{id}", Method.PUT);
             request.AddUrlSegment("userid", Utilities.CurrentUser.Id);
             request.AddUrlSegment("id", tournamentId);
             request.AddJsonBody(JsonConvert.SerializeObject(objTournActivity.TournamentMain));

@@ -91,7 +91,7 @@ namespace XWTWeb.Controllers
                 //TODO:  Correct userid/id shit
                 var request = new RestRequest("Tournaments/{userid}", Method.PUT);
                 request.AddUrlSegment("userid", Utilities.CurrentUser.Id);
-                //request.AddUrlSegment("id", tournament.Id);
+                request.AddUrlSegment("id", tournament.Id);
                 request.AddJsonBody(JsonConvert.SerializeObject(tournament));
 
                 // execute the request
