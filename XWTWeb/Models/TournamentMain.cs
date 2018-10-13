@@ -84,7 +84,7 @@ namespace XWTWeb.Models
         public int TournamentId { get; set; }
         public int Number { get; set; }
         public bool Swiss { get; set; } = true;
-        public DateTime RoundTimeEnd { get; set; }
+        public Nullable<DateTime> RoundTimeEnd { get; set; } = null;
 
         public List<TournamentMainRoundTable> Tables { get; set; } = new List<TournamentMainRoundTable>();
 

@@ -38,8 +38,7 @@ namespace XWTWeb.Controllers
             //Get Tournament Info
             try
             {
-                //TODO:  Likely need to pull new tournament info every time, but for the sake of debug doing this
-                if (id > 0 && objTournMain.Id != id)
+                if (id > 0)
                 {
                     var request = new RestRequest("Tournaments/{userid}/{id}", Method.GET);
                     request.AddUrlSegment("userid", Utilities.CurrentUser.Id);
@@ -253,22 +252,16 @@ namespace XWTWeb.Controllers
 
             objTournMain.Rounds.Add(round);
 
-            ////Add/Save the round
-            //using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
-            //{
-            //    try
-            //    {
-            //        conn.Update(objTournMain); //Update any other information that was saved such as Bye counts and such
-            //        conn.InsertWithChildren(round, true);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        DisplayAlert("Warning!", "Error adding round to tournament! " + ex.Message, "OK");
-            //    }
 
-            //    OnAppearing();
-            //}
+            //Create round and associated tables on database
+            var request = new RestRequest("TournamentsRounds/{userid}/{id}", Method.POST);
+            request.AddUrlSegment("userid", Utilities.CurrentUser.Id);
+            request.AddUrlSegment("id", round.Id);
+            request.AddJsonBody(JsonConvert.SerializeObject(round));
 
+            // execute the request
+            IRestResponse response = client.Execute(request);
+            var content = response.Content;
         }
 
         #endregion
