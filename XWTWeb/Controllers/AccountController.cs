@@ -52,6 +52,11 @@ namespace XWTWeb.Controllers
                     IRestResponse responseLogin = client.Execute(requestLogin);
                     var contentLogin = responseLogin.Content;
 
+                    //if (responseLogin.ErrorMessage.Contains("Unable to connect to the remote server"))
+                    //{
+                        
+                    //}
+
                     //Check if we get a fail from API
                     if (contentLogin.ToUpper().Contains("GET: FALSE"))
                     {

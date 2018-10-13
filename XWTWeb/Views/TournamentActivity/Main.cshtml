@@ -127,21 +127,21 @@
                                         </div>
                                         <div class="row pl-1 pl-sm-5">
 
-                                            <button id="@round.Number-@table.Number-Player1Winner" class="btn p-1 mr-2 align-self-center @(table.Player1Winner ? "btn-outline-success fas fa-check" : "btn-outline-danger fas fa-times")" @(table.Bye || !table.ScoreTied ? "disabled" : "") data-playerid="@table.Player1Id" data-playernumber="1" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-winner="@table.Player1Winner" onclick="TogglePlayerWinner(this);"></button>
+                                            <button id="@round.Id-@table.Id-Player1Winner" class="btn p-1 mr-2 align-self-center @(table.Player1Winner ? "btn-outline-success fas fa-check" : "btn-outline-danger fas fa-times")" @(table.Bye || !table.ScoreTied ? "disabled" : "") data-playerid="@table.Player1Id" data-playernumber="1" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-winner="@table.Player1Winner" onclick="TogglePlayerWinner(this);"></button>
 
                                             <div class="col-3 col-sm-2 col-xl-1 p-0 text-center">
-                                                <input id="@round.Number-@table.Number-Player1Score" type="number" min="0" max="@Model.TournamentMain.MaxPoints" value="@table.Player1Score" class="form-control col pl-2 pr-0" data-playerid="@table.Player1Id" data-playernumber="1" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-save="score" @(table.Bye ? "disabled" : "") onchange="UpdatePlayerScores(this, @Model.TournamentMain.MaxPoints);" />
+                                                <input id="@round.Id-@table.Id-Player1Score" type="number" min="0" max="@Model.TournamentMain.MaxPoints" value="@table.Player1Score" class="form-control col pl-2 pr-0" data-playerid="@table.Player1Id" data-playernumber="1" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-save="score" @(table.Bye ? "disabled" : "") onchange="UpdatePlayerScores(this, @Model.TournamentMain.MaxPoints);" />
                                                 <label class="h6">@table.Player1Name</label>
                                             </div>
                                             <div class="col-1 text-center font-italic align-self-center p-0 h5">
                                                 vs.
                                             </div>
                                             <div class="col-3 col-sm-2 col-xl-1 p-0 text-center">
-                                                <input id="@round.Number-@table.Number-Player2Score" type="number" min="0" max="@Model.TournamentMain.MaxPoints" value="@table.Player2Score" class="form-control col pl-2 pr-0" data-playerid="@table.Player2Id" data-playernumber="2" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-save="score" @(table.Bye ? "disabled" : "") onchange="UpdatePlayerScores(this, @Model.TournamentMain.MaxPoints);" />
+                                                <input id="@round.Id-@table.Id-Player2Score" type="number" min="0" max="@Model.TournamentMain.MaxPoints" value="@table.Player2Score" class="form-control col pl-2 pr-0" data-playerid="@table.Player2Id" data-playernumber="2" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-save="score" @(table.Bye ? "disabled" : "") onchange="UpdatePlayerScores(this, @Model.TournamentMain.MaxPoints);" />
                                                 <label class="h6">@table.Player2Name</label>
                                             </div>
 
-                                            <button id="@round.Number-@table.Number-Player2Winner" class="btn p-1 ml-2 align-self-center @(table.Player2Winner ? "btn-outline-success fas fa-check" : "btn-outline-danger fas fa-times")" @(table.Bye || !table.ScoreTied ? "disabled" : "")  data-playerid="@table.Player2Id" data-playernumber="2" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-winner="@table.Player2Winner" onclick="TogglePlayerWinner(this);"></button>
+                                            <button id="@round.Id-@table.Id-Player2Winner" class="btn p-1 ml-2 align-self-center @(table.Player2Winner ? "btn-outline-success fas fa-check" : "btn-outline-danger fas fa-times")" @(table.Bye || !table.ScoreTied ? "disabled" : "")  data-playerid="@table.Player2Id" data-playernumber="2" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-winner="@table.Player2Winner" onclick="TogglePlayerWinner(this);"></button>
                                         </div>
                                     </td>
                                 </tr>
@@ -319,8 +319,8 @@
             , intPoints = parseInt($(inpt).val(), 10);
 
         //Determine which round and table we're dealing with, set which values we're to search for 
-        var intRoundField = intRoundNumber
-            , intTableField = intTableNumber;
+        var intRoundField = intRoundId
+            , intTableField = intTableId;
 
         //Modify to ensure points are within 0 and max points
         if (intPoints < 0)
@@ -370,8 +370,8 @@
             , intTableNumber = $(btn).data('tablenumber');
 
         //Determine which round and table we're dealing with, set which values we're to search for 
-        var intRoundField = intRoundNumber
-            , intTableField = intTableNumber;
+        var intRoundField = intRoundId
+            , intTableField = intTableId;
 
         var $inptPlayer1Winner = $("#" + intRoundField + "-" + intTableField + "-Player1Winner")
             , $inptPlayer2Winner = $("#" + intRoundField + "-" + intTableField + "-Player2Winner");
