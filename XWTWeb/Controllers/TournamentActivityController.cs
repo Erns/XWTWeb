@@ -38,11 +38,11 @@ namespace XWTWeb.Controllers
             //Get Tournament Info
             try
             {
-                if (id > 0)
+                if (tournamentId > 0)
                 {
                     var request = new RestRequest("Tournaments/{userid}/{id}", Method.GET);
                     request.AddUrlSegment("userid", Utilities.CurrentUser.Id);
-                    request.AddUrlSegment("id", id);
+                    request.AddUrlSegment("id", tournamentId);
 
                     // execute the request
                     IRestResponse response = client.Execute(request);
@@ -107,7 +107,7 @@ namespace XWTWeb.Controllers
 
         #region Setup Round
 
-        public ActionResult AddNewRound(string activePlayers)
+        public ActionResult AddNewRound(bool swiss, string activePlayers)
         {
 
             List<TournamentMainPlayer> result = JsonConvert.DeserializeObject<List<TournamentMainPlayer>>(activePlayers);
@@ -166,16 +166,8 @@ namespace XWTWeb.Controllers
             IRestResponse response = client.Execute(request);
             var content = response.Content;
 
-            //TournamentMainRound round = new TournamentMainRound();
-            //round.Number = 1;
-
-            //result.TournamentMain.Rounds.Add(round);
-
-
-            //objTournActivity = result;
-            //UpdateModel<TournamentActivity>(result);
-
-            StartRound(true, 0);
+            //Start up the next round
+            StartRound(swiss, 0);
 
             return View(objTournActivity);
             
@@ -422,9 +414,10 @@ namespace XWTWeb.Controllers
             try
             {
 
-
-                //var request = new RestRequest("Players/{userid}", Method.PUT);
+                ////Update database
+                //var request = new RestRequest("TournamentsRounds/{userid}/{id}", Method.PUT);
                 //request.AddUrlSegment("userid", Utilities.CurrentUser.Id);
+                //request.AddUrlSegment("id", result.RoundId);
                 //request.AddJsonBody(JsonConvert.SerializeObject(result));
 
                 //// execute the request
@@ -460,6 +453,63 @@ namespace XWTWeb.Controllers
 
             return "";
 
+        }
+
+        #endregion
+
+        #region Delete Last Round
+
+        public ActionResult DeleteRound(int roundId)
+        {
+
+            //Delete round
+            try
+            {
+                if (tournamentId > 0)
+                {
+                    var request = new RestRequest("TournamentsRounds/{userid}/{id}", Method.DELETE);
+                    request.AddUrlSegment("userid", Utilities.CurrentUser.Id);
+                    request.AddUrlSegment("id", roundId);
+
+                    // execute the request
+                    IRestResponse response = client.Execute(request);
+                    var content = response.Content;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Write(string.Format("TournamentActivityController.DeleteRound{0}Delete Round Error:{1}", Environment.NewLine, ex.Message));
+            }
+
+            //Pull the tournament information to reload it correctly
+            try
+            {
+                if (tournamentId > 0)
+                {
+                    var request = new RestRequest("Tournaments/{userid}/{id}", Method.GET);
+                    request.AddUrlSegment("userid", Utilities.CurrentUser.Id);
+                    request.AddUrlSegment("id", tournamentId);
+
+                    // execute the request
+                    IRestResponse response = client.Execute(request);
+                    var content = response.Content;
+
+                    List<TournamentMain> result = JsonConvert.DeserializeObject<List<TournamentMain>>(JsonConvert.DeserializeObject(content).ToString());
+                    foreach (TournamentMain tmpTournament in result)
+                    {
+                        objTournMain = tmpTournament;
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Write(string.Format("TournamentActivityController.DeleteRound{0}Get Tournament Error:{1}", Environment.NewLine, ex.Message));
+            }
+
+            objTournActivity.TournamentMain = objTournMain;
+
+            return View(objTournActivity);
         }
 
         #endregion

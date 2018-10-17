@@ -99,10 +99,12 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Options</a>
                     <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 42px, 0px);">
-                        <a class="dropdown-item" href="#" onclick="StartNextRound(event);">Start Next Round</a>
-                        <a class="dropdown-item" href="#">Start Top Cut</a>
+                        <a class="dropdown-item" href="#" onclick="StartNextRound(event, true, @Model.TournamentMain.Rounds.Count, @(Model.TournamentMain.Rounds.Count > 0 ? Model.TournamentMain.Rounds[Model.TournamentMain.Rounds.Count - 1].Id : 0));">Start Next Round</a>
+                        <a class="dropdown-item" href="#" onclick="StartNextRound(event, false, @Model.TournamentMain.Rounds.Count, @(Model.TournamentMain.Rounds.Count > 0 ? Model.TournamentMain.Rounds[Model.TournamentMain.Rounds.Count - 1].Id : 0));">Start Top Cut</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#" onclick="DeleteLastRound(event, @Model.TournamentMain.Rounds.Count);">Delete Last Round</a>
+                        <a class="dropdown-item" href="#" onclick="DeleteLastRound(event, @Model.TournamentMain.Rounds.Count, @(Model.TournamentMain.Rounds.Count > 0 ? Model.TournamentMain.Rounds[Model.TournamentMain.Rounds.Count - 1].Id : 0));">Delete Last Round</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#" onclick="TimerPrompt(@Model.TournamentMain.RoundTimeLength);">Start Timer</a>
                     </div>
                 </li>
             </ul>
@@ -120,28 +122,34 @@
                                 {
                                 <tr>
                                     <td>
-                                        <div class="row">
+                                        <div class="row text-center">
                                             <label class="col h5">
                                                 Table #@table.Number@(table.Bye ? " (BYE)" : "") - @table.TableName
                                             </label>
                                         </div>
-                                        <div class="row pl-1 pl-sm-5">
+                                        <hr class="m-0 mb-3" />
+                                        <div class="row justify-content-center roundtabledatarow">
 
-                                            <button id="@round.Id-@table.Id-Player1Winner" class="btn p-1 mr-2 align-self-center @(table.Player1Winner ? "btn-outline-success fas fa-check" : "btn-outline-danger fas fa-times")" @(table.Bye || !table.ScoreTied ? "disabled" : "") data-playerid="@table.Player1Id" data-playernumber="1" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-winner="@table.Player1Winner" onclick="TogglePlayerWinner(this);"></button>
+                                            @*Player 1*@
+                                            <div class="col d-flex justify-content-end">
+                                                <input id="@round.Id-@table.Id-Player1Score" type="number" min="0" max="@Model.TournamentMain.MaxPoints" value="@table.Player1Score" class="form-control text-right" style="max-width:75px;" data-playerid="@table.Player1Id" data-playernumber="1" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-save="score" @(table.Bye ? "disabled" : "") onchange="UpdatePlayerScores(this, @Model.TournamentMain.MaxPoints);" tabindex="@table.Number" />
+                                            </div>
+                                            <button id="@round.Id-@table.Id-Player1Winner" class="col-auto btn p-1 align-self-center @(table.Player1Winner ? "btn-outline-success fas fa-check" : "btn-outline-danger fas fa-times")" @(table.Bye || !table.ScoreTied ? "disabled" : "") data-playerid="@table.Player1Id" data-playernumber="1" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-winner="@table.Player1Winner" onclick="TogglePlayerWinner(this);"></button>
+                                            <label class="h6 col m-0 align-self-center">@table.Player1Name</label>
 
-                                            <div class="col-3 col-sm-2 col-xl-1 p-0 text-center">
-                                                <input id="@round.Id-@table.Id-Player1Score" type="number" min="0" max="@Model.TournamentMain.MaxPoints" value="@table.Player1Score" class="form-control col pl-2 pr-0" data-playerid="@table.Player1Id" data-playernumber="1" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-save="score" @(table.Bye ? "disabled" : "") onchange="UpdatePlayerScores(this, @Model.TournamentMain.MaxPoints);" />
-                                                <label class="h6">@table.Player1Name</label>
+                                            @*<div class="w-100"> </div>*@
+                                            <div class="col-12 text-center font-italic align-self-center p-0 m-1 h5">
+                                                vs
                                             </div>
-                                            <div class="col-1 text-center font-italic align-self-center p-0 h5">
-                                                vs.
-                                            </div>
-                                            <div class="col-3 col-sm-2 col-xl-1 p-0 text-center">
-                                                <input id="@round.Id-@table.Id-Player2Score" type="number" min="0" max="@Model.TournamentMain.MaxPoints" value="@table.Player2Score" class="form-control col pl-2 pr-0" data-playerid="@table.Player2Id" data-playernumber="2" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-save="score" @(table.Bye ? "disabled" : "") onchange="UpdatePlayerScores(this, @Model.TournamentMain.MaxPoints);" />
-                                                <label class="h6">@table.Player2Name</label>
+                                            @*<div class="w-100"> </div>*@
+
+                                            @*Player 2*@
+                                            <div class="col d-flex justify-content-end">
+                                                <input id="@round.Id-@table.Id-Player2Score" type="number" min="0" max="@Model.TournamentMain.MaxPoints" value="@table.Player2Score" class="form-control text-right" style="max-width:75px;" data-playerid="@table.Player2Id" data-playernumber="2" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-save="score" @(table.Bye ? "disabled" : "") onchange="UpdatePlayerScores(this, @Model.TournamentMain.MaxPoints);" tabindex="@table.Number" />
                                             </div>
 
-                                            <button id="@round.Id-@table.Id-Player2Winner" class="btn p-1 ml-2 align-self-center @(table.Player2Winner ? "btn-outline-success fas fa-check" : "btn-outline-danger fas fa-times")" @(table.Bye || !table.ScoreTied ? "disabled" : "")  data-playerid="@table.Player2Id" data-playernumber="2" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-winner="@table.Player2Winner" onclick="TogglePlayerWinner(this);"></button>
+                                            <button id="@round.Id-@table.Id-Player2Winner" class="col-auto btn p-1 align-self-center @(table.Player2Winner ? "btn-outline-success fas fa-check" : "btn-outline-danger fas fa-times")" @(table.Bye || !table.ScoreTied ? "disabled" : "") data-playerid="@table.Player2Id" data-playernumber="2" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-winner="@table.Player2Winner" onclick="TogglePlayerWinner(this);"></button>
+                                            <label class="h6 col m-0 align-self-center">@table.Player2Name</label>
                                         </div>
                                     </td>
                                 </tr>
@@ -239,7 +247,7 @@
     }
 
     //Rounds - Add/Remove
-    function StartNextRound(e) {
+    function StartNextRound(e, blnSwiss, intRoundCount, intRoundId) {
         e.stopPropagation();
 
         //Make sure we have players for the next round
@@ -254,8 +262,20 @@
             return false;
         }
 
+        //Verify that all tables have logged a winner
+        if (intRoundCount > 0) {
+            var intWinnnerCount = $(".roundtabledatarow button[data-winner='True']").length;
+            var intRoundTableRowCount = $(".roundtabledatarow").length;
+
+            if (intWinnnerCount != intRoundTableRowCount) {
+                bootbox.alert("Not all tables have logged a winner!");
+                return false;
+            }
+        }
+
         var jsonData = [];
 
+        //Create json data to send
         $("#tournamentActivePlayersList option").each(function () {
             var player = {
                 Id: 0,
@@ -274,17 +294,21 @@
             dataType: "json",
             type: "POST",
             url: "/TournamentActivity/AddNewRound",
-            data: { activePlayers: JSON.stringify(jsonData) },
+            data: { swiss: blnSwiss, activePlayers: JSON.stringify(jsonData) },
+            beforeSend: BBoxLoading,
             complete: function (data) {
                 location.reload();
+                BBoxLoadingClose();
             }
         });
     }
 
-    function DeleteLastRound(e, intRoundCount) {
+
+    //Delete the last round
+    function DeleteLastRound(e, intRoundCount, intRoundId) {
         e.stopPropagation();
 
-        if (intRoundCount == 0) {
+        if (intRoundCount == 0 || intRoundId == 0) {
             bootbox.alert('There are no rounds to delete!');
             return false;
         }
@@ -293,7 +317,20 @@
             message: "Are you sure you want to delete the last round listed (this cannot be undone)?",
             callback: function (result) {
                 if (result) {
-                    bootbox.alert('deleted');
+
+                    //Delete last round
+                    $.ajax({
+                        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                        dataType: "json",
+                        type: "POST",
+                        url: "/TournamentActivity/DeleteRound",
+                        data: { roundId: intRoundId },
+                        beforeSend: BBoxLoading,
+                        complete: function (data) {
+                            location.reload();
+                            BBoxLoadingClose();
+                        }
+                    });
                 }
             }
         });
@@ -415,10 +452,11 @@
             type: "POST",
             url: "/TournamentActivity/UpdateTableData",
             data: { table: JSON.stringify(table) },
+            //beforeSend: BBoxLoading,
             complete: function (data) {
                 //location.reload();
-                debugger
                 $("#standingsTBody").html(data.responseText);
+                BBoxLoadingClose();
             }
         });
     }
@@ -439,6 +477,21 @@
             btn.data('winner', 'False');
             btn.attr('data-winner', 'False');
         }
+    }
+
+    function TimerPrompt(intDefaultLength) {
+        bootbox.prompt({
+            size: "small",
+            title: "Set round length (in minutes):",
+            closeButton: false,
+            inputType: 'number',
+            value: intDefaultLength,
+            callback: function (result) {
+                if (result) {
+                    bootbox.alert(result + ' minutes');
+                }
+            }
+        });
     }
 
 </script>
