@@ -73,6 +73,8 @@ namespace XWTWeb.Controllers
                 IRestResponse response = client.Execute(request);
                 var content = response.Content;
 
+
+
                 List<Player> result = JsonConvert.DeserializeObject<List<Player>>(JsonConvert.DeserializeObject(content).ToString());
                 foreach (Player player in result)
                 {
@@ -414,34 +416,40 @@ namespace XWTWeb.Controllers
             try
             {
 
-                ////Update database
-                //var request = new RestRequest("TournamentsRounds/{userid}/{id}", Method.PUT);
-                //request.AddUrlSegment("userid", Utilities.CurrentUser.Id);
-                //request.AddUrlSegment("id", result.RoundId);
-                //request.AddJsonBody(JsonConvert.SerializeObject(result));
+                //Update database
+                var request = new RestRequest("TournamentsRounds/{userid}/{id}", Method.PUT);
+                request.AddUrlSegment("userid", Utilities.CurrentUser.Id);
+                request.AddUrlSegment("id", result.RoundId);
+                request.AddJsonBody(JsonConvert.SerializeObject(result));
 
-                //// execute the request
-                //IRestResponse response = client.Execute(request);
-                //var content = response.Content; // raw content as string
+                // execute the request
+                IRestResponse response = client.Execute(request);
+                var content = response.Content; // raw content as string
 
-                foreach (TournamentMainRound round in objTournMain.Rounds)
+
+                if (content.ToUpper().Contains("PUT: SUCCESS"))
                 {
-                    if (round.Id == result.RoundId)
+                    foreach (TournamentMainRound round in objTournMain.Rounds)
                     {
-                        foreach (TournamentMainRoundTable rdTable in round.Tables)
+                        if (round.Id == result.RoundId)
                         {
-                            if (rdTable.Id == result.Id)
+                            foreach (TournamentMainRoundTable rdTable in round.Tables)
                             {
-                                rdTable.Player1Score = result.Player1Score;
-                                rdTable.Player1Winner = result.Player1Winner;
-                                rdTable.Player2Score = result.Player2Score;
-                                rdTable.Player2Winner = result.Player2Winner;
-                                rdTable.ScoreTied = result.ScoreTied;
+                                if (rdTable.Id == result.Id)
+                                {
+                                    rdTable.Player1Score = result.Player1Score;
+                                    rdTable.Player1Winner = result.Player1Winner;
+                                    rdTable.Player2Score = result.Player2Score;
+                                    rdTable.Player2Winner = result.Player2Winner;
+                                    rdTable.ScoreTied = result.ScoreTied;
+                                }
                             }
+                            break;
                         }
-                        break;
                     }
                 }
+
+                
 
                 return objTournActivity.GetStandings();
             }

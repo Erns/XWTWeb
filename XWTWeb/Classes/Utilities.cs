@@ -191,10 +191,10 @@ namespace XWTWeb.Classes
             List<TournamentMainPlayer> lstTmpPlayers = new List<TournamentMainPlayer>();
 
             lstTmpPlayers = objTournMain.Players;
+            lstTmpPlayers = lstTmpPlayers.OrderByDescending(obj => obj.RoundsPlayed).ToList();
             lstTmpPlayers = lstTmpPlayers.OrderByDescending(obj => obj.SOS).ToList();
             lstTmpPlayers = lstTmpPlayers.OrderByDescending(obj => obj.MOV).ToList();
             lstTmpPlayers = lstTmpPlayers.OrderByDescending(obj => obj.Score).ToList();
-            lstTmpPlayers = lstTmpPlayers.OrderByDescending(obj => obj.RoundsPlayed).ToList();
 
             return lstTmpPlayers;
         }
