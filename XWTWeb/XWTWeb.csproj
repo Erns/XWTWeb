@@ -278,9 +278,9 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Player\Main.cshtml" />
-    <Content Include="Views\Tournament\Main.cshtml" />
-    <Content Include="Views\Account\Index.cshtml" />
+    <Content Include="Views\Player\PlayerMain.cshtml" />
+    <Content Include="Views\Tournament\TournamentMain.cshtml" />
+    <Content Include="Views\Account\LoginMain.cshtml" />
     <Content Include="Scripts\umd\popper.min.js.map" />
     <Content Include="Scripts\umd\popper.js.map" />
     <Content Include="Scripts\umd\popper-utils.min.js.map" />
@@ -290,8 +290,9 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
-    <Content Include="Views\Tournament\AddEdit.cshtml" />
-    <Content Include="Views\TournamentActivity\Main.cshtml" />
+    <Content Include="Views\Tournament\TournamentAddEdit.cshtml" />
+    <Content Include="Views\TournamentActivity\TournamentActivityMain.cshtml" />
+    <Content Include="Views\Account\LoginRegister.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

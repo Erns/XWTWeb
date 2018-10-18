@@ -37,3 +37,9 @@ function SortSelect(select) {
         return $(x).text() > $(y).text() ? 1 : -1;
     }));
 }
+
+function IsEmail(strEmail) {
+    var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+
+    return filter.test(strEmail);
+}

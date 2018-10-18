@@ -23,6 +23,9 @@ textarea {
     max-width: 280px;
 }
 
+.input-login{
+    max-width: 280px;
+}
 
 /*https://codepen.io/peiche/pen/xOVpPo*/
 .form-group {
@@ -65,3 +68,9 @@ textarea {
     flex-shrink: 1;
     width:0;
 }
+
+.sticky-offset {
+    top: 60px;
+    z-index:1000 !important;
+}
+

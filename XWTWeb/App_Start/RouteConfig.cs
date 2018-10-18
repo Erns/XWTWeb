@@ -16,7 +16,7 @@ namespace XWTWeb
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Player", action = "Main", id = UrlParameter.Optional }
+                defaults: new { controller = "Player", action = "PlayerMain", id = UrlParameter.Optional }
             );
         }
     }

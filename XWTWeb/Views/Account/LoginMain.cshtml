@@ -1,0 +1,58 @@
+﻿@model XWTWeb.Models.UserAccount
+
+@using (Html.BeginForm("LoginMain", "Account", FormMethod.Post, new { @id = "LoginForm" }))
+{
+<div class="container jumbotron mt-2 pt-3">
+    <div class="row p-2 justify-content-center">
+
+        <label class="col-12 pb-3 font-weight-bold text-center" style="font-size:x-large">Login</label>
+
+        <div class="form-row col-12 d-flex justify-content-center">
+            <div class="form-group">
+                @Html.TextBoxFor(model => model.UserName, new { @class = "col-12 form-control input-login", @required = "" })
+                <label class="form-control-placeholder" for="UserName">User Name</label>
+            </div>
+
+            <div class="w-100"></div>
+
+            <div class="form-group">
+                @Html.PasswordFor(model => model.Password, new { @class = "col-12 form-control input-login", @required = "" })
+                <label class="form-control-placeholder" for="Password">Password</label>
+            </div>
+        </div>
+
+        <div class="w-100"></div>
+
+        <button type="submit" class="btn btn-primary form-control input-login mt-2" onclick="LoginOnClick();">Login</button>
+        @if (Model.LoginFails > 0)
+        {
+            <div class="w-100"></div>
+            <label class="text-danger col d-flex justify-content-center pt-3">Login failed</label>
+        }
+
+        <div class="w-100 pt-4"></div>
+        @Html.ActionLink("Create New Account?", "LoginRegister", "Account")
+    </div>
+
+    <input type="hidden" id="submitCommand" name="submitCommand" value="" />
+
+
+</div>
+}
+
+
+    <script type="text/javascript">
+
+        $(function () {
+            $("#submitCommand").val('');
+        });
+
+        function LoginOnClick() {
+            if ($("#UserName").val() != "" && $("#Password").val() != "") {
+                BBoxLoading();
+            }
+        }
+
+    </script>
+
+

@@ -71,8 +71,8 @@ namespace XWTWeb.Classes
             //Reset and calculate each player's score
             foreach (TournamentMainPlayer player in objTournMain.Players)
             {
-                if (!dctPlayers.ContainsKey(player.Id))
-                    dctPlayers.Add(player.Id, new TournamentMainPlayer());
+                if (!dctPlayers.ContainsKey(player.PlayerId))
+                    dctPlayers.Add(player.PlayerId, new TournamentMainPlayer());
 
                 player.MOV = 0;
                 player.RoundsPlayed = 0;
@@ -149,22 +149,30 @@ namespace XWTWeb.Classes
 
 
             //Now calculate the Strength of Schedule (SOS)
-            foreach (TournamentMainPlayer player in objTournMain.Players)
+            if (objTournMain.Rounds.Count > 0)
             {
-                if (player.RoundsPlayed == 0) continue;
-
-                decimal decSoS = 0;
-                foreach (int opponentId in player.OpponentIds)
+                foreach (TournamentMainPlayer player in objTournMain.Players)
                 {
-                    TournamentMainPlayer opponent = dctPlayers[opponentId];
-                    if (opponent.RoundsPlayed == 0) continue;
-                    decSoS += Decimal.Divide(opponent.Score, opponent.RoundsPlayed);
+                    if (player.RoundsPlayed == 0) continue;
+
+                    decimal decSoS = 0;
+                    foreach (int opponentId in player.OpponentIds)
+                    {
+                        if (dctPlayers.ContainsKey(opponentId))
+                        {
+                            TournamentMainPlayer opponent = dctPlayers[opponentId];
+                            if (opponent.RoundsPlayed == 0) continue;
+                            decSoS += Decimal.Divide(opponent.Score, opponent.RoundsPlayed);
+
+                        }
+                    }
+
+                    decSoS /= player.RoundsPlayed;
+                    player.SOS = Math.Round(decSoS, 2);
+
                 }
-
-                decSoS /= player.RoundsPlayed;
-                player.SOS = Math.Round(decSoS, 2);
-
             }
+
 
 
             //Determine standings/rank

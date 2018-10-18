@@ -25,7 +25,7 @@ namespace XWTWeb.Controllers
         #region Main
       
         // GET: TournamentActivity
-        public ActionResult Main(int id)
+        public ActionResult TournamentActivityMain(int id)
         {
             tournamentId = id;
 
@@ -54,11 +54,16 @@ namespace XWTWeb.Controllers
                         objTournMain = tmpTournament;
                         break;
                     }
+
+                    //Didn't actually get a result (such as trying to access a tournament not "owned" by user).  Kick back to Main page
+                    if (result.Count == 0)
+                        return RedirectToAction("TournamentMain", "Tournament");
                 }
             }
             catch (Exception ex)
             {
-                Console.Write(string.Format("TournamentActivityController.Main{0}Get Tournament Error:{1}", Environment.NewLine, ex.Message));
+                Console.Write(string.Format("TournamentActivityController.TournamentActivityMain{0}Get Tournament Error:{1}", Environment.NewLine, ex.Message));
+                return RedirectToAction("TournamentMain", "Tournament");
             }
 
             lstActivePlayers = objTournMain.ActivePlayersList();
@@ -72,8 +77,6 @@ namespace XWTWeb.Controllers
                 // execute the request
                 IRestResponse response = client.Execute(request);
                 var content = response.Content;
-
-
 
                 List<Player> result = JsonConvert.DeserializeObject<List<Player>>(JsonConvert.DeserializeObject(content).ToString());
                 foreach (Player player in result)
@@ -90,7 +93,7 @@ namespace XWTWeb.Controllers
             }
             catch (Exception ex)
             {
-                Console.Write(string.Format("TournamentActivityController.Main{0}Get Players Error:{1}", Environment.NewLine, ex.Message));
+                Console.Write(string.Format("TournamentActivityController.TournamentActivityMain{0}Get Players Error:{1}", Environment.NewLine, ex.Message));
             }
 
             //Set standings when loading page

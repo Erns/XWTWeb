@@ -20,7 +20,7 @@ namespace XWTWeb.Controllers
         RestClient client = Utilities.InitializeRestClient();
 
         // GET: Tournament
-        public ActionResult Main()
+        public ActionResult TournamentMain()
         {
             List<TournamentMain> tournaments = new List<TournamentMain>();
 
@@ -42,14 +42,14 @@ namespace XWTWeb.Controllers
             }
             catch (Exception ex)
             {
-                Console.Write(string.Format("PlayerController.Main{0}Error:{1}", Environment.NewLine, ex.Message));
+                Console.Write(string.Format("PlayerController.TournamentMain{0}Error:{1}", Environment.NewLine, ex.Message));
             }
 
             return View(tournaments.ToList());
         }
 
 
-        public ActionResult AddEdit(int id)
+        public ActionResult TournamentAddEdit(int id)
         {
 
             TournamentMain tournament = new TournamentMain(id, "", null, 200, 75);
@@ -72,18 +72,23 @@ namespace XWTWeb.Controllers
                         tournament = tmpTournament;
                         break;
                     }
+
+                    //Didn't actually get a result (such as trying to access a tournament not "owned" by user).  Kick back to Main page
+                    if (result.Count == 0)
+                        return RedirectToAction("TournamentMain", "Tournament");
                 }
             }
             catch(Exception ex)
             {
-                Console.Write(string.Format("PlayerController.Main{0}AddEdit:{1}", Environment.NewLine, ex.Message));
+                Console.Write(string.Format("PlayerController.Main{0}TournamentAddEdit:{1}", Environment.NewLine, ex.Message));
+                return RedirectToAction("TournamentMain", "Tournament");
             }
 
             return View(tournament);
         }
 
         [HttpPost]
-        public ActionResult AddEdit(TournamentMain tournament)
+        public ActionResult TournamentAddEdit(TournamentMain tournament)
         {
 
             try
@@ -101,10 +106,10 @@ namespace XWTWeb.Controllers
             }
             catch (Exception ex)
             {
-                Console.Write(string.Format("TournamentController.AddEdit{0}Error:{1}", Environment.NewLine, ex.Message));
+                Console.Write(string.Format("TournamentController.TournamentAddEdit{0}Error:{1}", Environment.NewLine, ex.Message));
             }
 
-            return RedirectToAction("Main", "Tournament");
+            return RedirectToAction("TournamentMain", "Tournament");
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿@model XWTWeb.Models.TournamentMain
 
 
-@using (Html.BeginForm("AddEdit", "Tournament", FormMethod.Post))
+@using (Html.BeginForm("TournamentAddEdit", "Tournament", FormMethod.Post))
 {   
     <form>
         <div class="jumbotron d-flex justify-content-center">
@@ -11,20 +11,15 @@
                 <div class="w-100"></div>
 
                 <div class="form-row">
-                    <div class="form-group col">
+                    <div class="form-group col-12">
                         @Html.TextBoxFor(model => model.Name, new { @class = "form-control col", @required = "" })
                         <label class="form-control-placeholder" for="Name">Tournament Name</label>
                     </div>
-                </div>
 
-                <div class="form-row">
-                    <div class="form-group col">
+                    <div class="form-group col-12 col-sm">
                         @Html.TextBoxFor(model => model.StartDate, "{0:MM/dd/yyyy}", new { @class = "form-control col", @required = "" })
                         <label class="form-control-placeholder" for="StartDate">Start Date</label>
                     </div>
-                </div>
-
-                <div class="form-row">
                     <div class="form-group col">
                         @Html.TextBoxFor(model => model.MaxPoints, new { @class = "form-control col", @required = "" })
                         <label class="form-control-placeholder" for="MaxPoints">Max Points</label>
@@ -34,10 +29,19 @@
                         @Html.TextBoxFor(model => model.RoundTimeLength, new { @class = "form-control col", @required = "" })
                         <label class="form-control-placeholder" for="RoundTimeLength">Round Time</label>
                     </div>
+
+                </div>
+
+                <div class="form-row">
+                    
                 </div>
 
                 <div class="w-100"></div>
-                <button type="submit" class="btn btn-primary col">Save</button>
+                
+                <div class="form-row">
+                    @Html.ActionLink("Cancel", "TournamentMain", "Tournament", new { area = "" }, new { @class = "btn btn-secondary form-group col mr-5" })
+                    <button type="submit" class="btn btn-primary form-group col ml-5">Save</button>
+                </div>
 
                 @*<input type="hidden" id="submitCommand" name="submitCommand" value="" />*@
 

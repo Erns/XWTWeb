@@ -17,23 +17,25 @@
     <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <div class="row">
-                <button type="button" class="navbar-toggler pr-2" data-toggle="collapse" data-target=".navbar-collapse">
+                <button type="button" class="navbar-toggler mr-2" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                @Html.ActionLink("XWing Tournament", "Main", "Player", new { area = "" }, new { @class = "navbar-brand" })
+                <div onclick="BBoxLoading();">
+                    @Html.ActionLink("  XWing Tournament", "PlayerMain", "Player", new { area = "" }, new { @class = "navbar-brand align-self-center fab fa-phoenix-squadron" })
+                </div>
 
             </div>
 
             @if (System.Web.HttpContext.Current.User.Identity.IsAuthenticated) { 
                 <div class="navbar-collapse collapse pl-3">
                     <ul class="navbar-nav mr-auto">
-                        <li class="nav-item">@Html.ActionLink("Players", "Main", "Player", new { area = "" }, new { @class = "nav-link" })</li>
-                        <li class="nav-item">@Html.ActionLink("Tournaments", "Main", "Tournament", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li class="nav-item" onclick="BBoxLoading();">@Html.ActionLink("Players", "PlayerMain", "Player", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li class="nav-item" onclick="BBoxLoading();">@Html.ActionLink("Tournaments", "TournamentMain", "Tournament", new { area = "" }, new { @class = "nav-link" })</li>
                     </ul>
                 </div>
 
                 <div class="p-2 col d-flex justify-content-end align-content-start">
-                    <button type="button" class="btn btn-secondary fas fa-sign-out-alt" onclick="LogoutOnClick();"></button>
+                    <button type="button" title="Logoff" class="btn btn-secondary fas fa-sign-out-alt" onclick="LogoutOnClick();"></button>
                 </div>
             }
         </div>

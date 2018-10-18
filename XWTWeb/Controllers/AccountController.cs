@@ -20,97 +20,103 @@ namespace XWTWeb.Controllers
         RestClient client = Utilities.InitializeRestClient();
 
         // GET: Account
-        public ActionResult Index()
+        public ActionResult LoginMain()
         {
-            return View(new LoginPage());
+            return View(new UserAccount());
         }
 
 
         [HttpPost]
-        public ActionResult Index(LoginPage user, string submitCommand)
+        public ActionResult LoginMain(UserAccount user) //, string submitCommand)
         {
 
-            switch (submitCommand)
+            if (string.IsNullOrEmpty(user.UserName) || string.IsNullOrEmpty(user.Password))
             {
-                case "Login":
-
-                    if (string.IsNullOrEmpty(user.LoginUser.UserName) || string.IsNullOrEmpty(user.LoginUser.Password))
-                    {
-                        user.LoginUser.LoginFails++;
-                        break;
-                    }
-
-                    //Hash up our password here
-                    user.LoginUser.Password = SHA1.Encode(user.LoginUser.Password);
-
-                    var requestLogin = new RestRequest("UserAccount", Method.GET);
-                    requestLogin.AddParameter("value", JsonConvert.SerializeObject(user.LoginUser));
-
-                    user.LoginUser.Password = "";
-
-                    // execute the request
-                    IRestResponse responseLogin = client.Execute(requestLogin);
-                    var contentLogin = responseLogin.Content;
-
-                    //if (responseLogin.ErrorMessage.Contains("Unable to connect to the remote server"))
-                    //{
-                        
-                    //}
-
-                    //Check if we get a fail from API
-                    if (contentLogin.ToUpper().Contains("GET: FALSE"))
-                    {
-                        user.LoginUser.LoginFails++;
-                        break;
-                    }
-
-                    //Put this in its own catch just in case it returns bad info
-                    try
-                    {
-                        UserAccount result = JsonConvert.DeserializeObject<UserAccount>(JsonConvert.DeserializeObject(contentLogin).ToString());
-                        if (result.Id != 0)
-                        {
-                            return LoginUser(result);
-                        }
-                    }
-                    catch
-                    {
-                        //Do nothing
-                    }
-
-                    user.LoginUser.LoginFails++;
-                    break;
-                    
-
-                case "Register":
-                    string strTmpPW = user.RegisterUser.Password;
-
-                    user.RegisterUser.Password = SHA1.Encode(user.RegisterUser.Password);
-
-                    var requestRegister = new RestRequest("UserAccount", Method.POST);
-                    requestRegister.AddJsonBody(JsonConvert.SerializeObject(user.RegisterUser));
-
-                    // execute the request
-                    IRestResponse responseRegister = client.Execute(requestRegister);
-                    var contentRegister = responseRegister.Content;
-
-                    if (contentRegister.ToUpper().Contains("POST: SUCCESS"))
-                    {
-                        //Programmatically login the user after successfully registered (TODO:  may want to verify email etc in future)
-                        user.LoginUser = user.RegisterUser;
-                        user.LoginUser.Password = strTmpPW;
-                        return Index(user, "Login");
-                    }                   
-
-                    break;
+                user.LoginFails++;
+                return View(user);
             }
 
-            user.LoginUser.Password = "";
-            user.RegisterUser.Password = "";
+            //Hash up our password here
+            user.Password = SHA1.Encode(user.Password);
+
+            var requestLogin = new RestRequest("UserAccount", Method.GET);
+            requestLogin.AddParameter("value", JsonConvert.SerializeObject(user));
+
+            user.Password = "";
+
+            // execute the request
+            IRestResponse responseLogin = client.Execute(requestLogin);
+            var contentLogin = responseLogin.Content;
+
+            //if (responseLogin.ErrorMessage.Contains("Unable to connect to the remote server"))
+            //{
+
+            //}
+
+            //Check if we get a fail from API
+            if (contentLogin.ToUpper().Contains("GET: FALSE"))
+            {
+                user.LoginFails++;
+                return View(user);
+            }
+
+            //Put this in its own catch just in case it returns bad info
+            try
+            {
+                UserAccount result = JsonConvert.DeserializeObject<UserAccount>(JsonConvert.DeserializeObject(contentLogin).ToString());
+                if (result.Id != 0)
+                {
+                    return LoginUser(result);
+                }
+            }
+            catch
+            {
+                //Do nothing
+            }
+
+            user.LoginFails++;
+            user.Password = "";
             return View(user);
         }
 
+        [AllowAnonymous]
+        public ActionResult LoginRegister()
+        {
+            return View(new UserAccount());
+        }
 
+        [HttpPost]
+        public ActionResult LoginRegister(UserAccount user)
+        {
+            string strTmpPW = user.Password;
+
+            user.Password = SHA1.Encode(user.Password);
+
+            var requestRegister = new RestRequest("UserAccount", Method.POST);
+            requestRegister.AddJsonBody(JsonConvert.SerializeObject(user));
+
+            // execute the request
+            IRestResponse responseRegister = client.Execute(requestRegister);
+            var contentRegister = responseRegister.Content;
+
+            //TODO:  Add check for email address as well
+
+            if (contentRegister.ToUpper().Contains("ALREADY EXIST"))
+            {
+                user.LoginFails++;
+            }
+
+            if (contentRegister.ToUpper().Contains("POST: SUCCESS"))
+            {
+                //Programmatically login the user after successfully registered (TODO:  may want to verify email etc in future)
+                user.Password = strTmpPW;
+                return LoginMain(user);
+            }
+
+            return View(user);
+        }
+
+        //Login user
         private ActionResult LoginUser(UserAccount user)
         {
             user.Password = "";
@@ -123,7 +129,7 @@ namespace XWTWeb.Controllers
             };
 
             System.Web.HttpContext.Current.Response.Cookies.Add(cookie);
-            return RedirectToAction("Main", "Player");
+            return RedirectToAction("PlayerMain", "Player");
         }
 
         //private async System.Threading.Tasks.Task TestEmailAsync()

@@ -20,7 +20,7 @@ namespace XWTWeb.Controllers
     {
         RestClient client = Utilities.InitializeRestClient();
 
-        public ActionResult Main()
+        public ActionResult PlayerMain()
         {
             List<Player> players = new List<Player>();
 
