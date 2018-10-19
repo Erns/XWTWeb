@@ -42,7 +42,7 @@
                                     <td>@tournament.StartDate.Value.ToString("MM/dd/yyyy")</td>
                                     <td class="d-flex justify-content-center align-content-center">
                                         <a href="#" title="Delete" style="font-weight:bold" class="btn btn-danger fas fa-trash-alt m-1 p-2" onclick="alert('test 1');"></a>
-                                        @Html.ActionLink(" ", "TournamentAddEdit", "Tournament", routeValues: new { id = tournament.Id }, htmlAttributes: new { @style = "font-weight:bold", @class = "btn btn-secondary fas fa-cogs m-1 p-2" })
+                                        @Html.ActionLink(" ", "TournamentAddEdit", "Tournament", routeValues: new { id = tournament.Id }, htmlAttributes: new { @style = "font-weight:bold", @class = "btn btn-info fas fa-cogs m-1 p-2" })
                                     </td>
                                 </tr>
                             }

@@ -452,8 +452,6 @@ namespace XWTWeb.Controllers
                     }
                 }
 
-                
-
                 return objTournActivity.GetStandings();
             }
             catch (Exception ex)
@@ -464,6 +462,108 @@ namespace XWTWeb.Controllers
 
             return "";
 
+        }
+
+        public string SwapTablePlayers(int roundId, int tableId, int originalPlayerId, int newPlayerId)
+        {
+            try
+            {
+                //Grab the tables we're going to need
+                TournamentMainRoundTable table1 = null;
+                TournamentMainRoundTable table2 = null;
+
+                foreach (TournamentMainRound round in objTournMain.Rounds)
+                {
+                    if (round.Id == roundId)
+                    {
+                        foreach(TournamentMainRoundTable table in round.Tables)
+                        {
+                            if (table.Id == tableId)
+                            {
+                                table1 = table;
+                            }
+                            else
+                            {
+                                if (table.Player1Id == newPlayerId || table.Player2Id == newPlayerId)
+                                {
+                                    table2 = table;
+                                }
+                            }
+                        }
+                        break;
+                    }
+                }
+
+                //If we're able to find valid tables, proceed with swapping players
+                //table1 = starting table (from the table we're swapping said player)
+                //table2 = new table (to the table we're moving said player)
+                if (table1 != null && table2 != null)
+                {
+                    string strOriginalPlayerName = "";
+                    string strNewPlayerName = "";
+
+                    //Set variables to help facilitate the swap
+                    if (table1.Player1Id == originalPlayerId)
+                        strOriginalPlayerName = table1.Player1Name;
+                    else
+                        strOriginalPlayerName = table1.Player2Name;
+
+                    if (table2.Player1Id == newPlayerId)
+                        strNewPlayerName = table2.Player1Name;
+                    else
+                        strNewPlayerName = table2.Player2Name;
+
+
+                    //Make the swap
+                    if (table1.Player1Id == originalPlayerId)
+                    {
+                        table1.Player1Id = newPlayerId;
+                        table1.Player1Name = strNewPlayerName;
+                    }
+                    else
+                    {
+                        table1.Player2Id = newPlayerId;
+                        table1.Player2Name = strNewPlayerName;
+                    }
+
+                    if (table2.Player1Id == newPlayerId)
+                    {
+                        table2.Player1Id = originalPlayerId;
+                        table2.Player1Name = strOriginalPlayerName;
+                    }
+                    else
+                    {
+                        table2.Player2Id = originalPlayerId;
+                        table2.Player2Name = strOriginalPlayerName;
+                    }
+
+                    //Set table names
+                    table1.TableName = string.Format("{0} vs {1}", table1.Player1Name, table1.Player2Name);
+                    table2.TableName = string.Format("{0} vs {1}", table2.Player1Name, table2.Player2Name);
+
+
+                    //Update database, update each table accordingly
+                    foreach (TournamentMainRoundTable table in new List<TournamentMainRoundTable> { table1, table2 }){
+                        var request = new RestRequest("TournamentsRounds/{userid}/{id}", Method.PUT);
+                        request.AddUrlSegment("userid", Utilities.CurrentUser.Id);
+                        request.AddUrlSegment("id", table.RoundId);
+                        request.AddJsonBody(JsonConvert.SerializeObject(table));
+
+                        //// execute the request
+                        //IRestResponse response = client.Execute(request);
+                        //var content = response.Content; // raw content as string
+                    }
+
+                    return "Player Swap SUCCESS";
+
+                }                               
+            }
+            catch (Exception ex)
+            {
+                Console.Write(string.Format("TournamentActivityController.SwapTablePlayers{0}Error:{1}", Environment.NewLine, ex.Message));
+            }
+
+            return "";
         }
 
         #endregion

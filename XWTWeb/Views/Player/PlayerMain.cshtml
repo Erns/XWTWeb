@@ -27,15 +27,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr id="playerMainTableRowTemplate" style="display:none" data-rowtype="NewPlayer">
-                        <td class="align-middle"><input type="text" class="required col form-control form-control-sm" value="" placeholder="Name" data-valuetype="Name" onfocus="$(this).popover('dispose');" /></td>
-                        <td class="align-middle"><input type="text" class="col form-control form-control-sm" value="" placeholder="Email Address" data-valuetype="Email" /></td>
-                        <td class="align-middle"><input type="text" class="col form-control form-control-sm" value="" placeholder="Group" data-valuetype="Group" /></td>
-                        <td class="d-flex justify-content-center align-content-center">
-                            <a href="#" title="Delete" style="font-weight:bold" class="btn btn-danger fas fa-trash-alt m-0 p-2" onclick="RemovePlayerRow(this);"></a>
-                        </td>
-                    </tr>
-
                     @foreach (XWTWeb.Models.Player player in Model)
                     {
                         <tr readonly id="playerMainTableRow_@player.Id" data-playerid="@player.Id">
@@ -53,6 +44,19 @@
 
         </div>
 
+        @*Hidden div with our row template (this way DataTables doesn't accidentally include it')*@
+        <div class="row" style="display:none;">
+            <table>
+                <tr id="playerMainTableRowTemplate" style="display:none" data-rowtype="NewPlayer">
+                    <td class="align-middle"><input type="text" class="required col form-control form-control-sm" value="" placeholder="Name" data-valuetype="Name" onfocus="$(this).popover('dispose');" /></td>
+                    <td class="align-middle"><input type="text" class="col form-control form-control-sm" value="" placeholder="Email Address" data-valuetype="Email" /></td>
+                    <td class="align-middle"><input type="text" class="col form-control form-control-sm" value="" placeholder="Group" data-valuetype="Group" /></td>
+                    <td class="d-flex justify-content-center align-content-center">
+                        <a href="#" title="Delete" style="font-weight:bold" class="btn btn-danger fas fa-trash-alt m-0 p-2" onclick="RemovePlayerRow(this);"></a>
+                    </td>
+                </tr>
+            </table>
+        </div>
 
     </div>
 

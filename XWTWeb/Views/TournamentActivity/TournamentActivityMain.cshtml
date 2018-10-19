@@ -113,50 +113,52 @@
             <div id="tournamentRoundTabContent" class="tab-content">
                 @foreach (XWTWeb.Models.TournamentMainRound round in Model.TournamentMain.Rounds)
                 {
-                <div class="tab-pane fade @(round.Number == Model.TournamentMain.Rounds.Count ? "show active" : "" ) " id="RoundTab-@round.Number">
-                    <div class="container-fluid pt-3">
-                        <table class="table table-striped table-hover">
-                            <tbody>
+                <div class="tab-pane fade container-fluid @(round.Number == Model.TournamentMain.Rounds.Count ? "show active" : "" ) " id="RoundTab-@round.Number">
+                    <div class="row pt-3 justify-content-center">
+                        @foreach(XWTWeb.Models.TournamentMainRoundTable table in round.Tables)
+                        {
+                        <div class="carddiv col-12 col-lg-6 col-xl-4 p-0 m-0">
+                            <div class="card m-1 @(table.Player1Winner || table.Player2Winner ? "border-success" : "border-secondary")">
+                                <div class="card-header">
+                                    <h5>Table #@table.Number@(table.Bye ? " (BYE)" : "") - @table.TableName</h5>
+                                </div>
 
-                                @foreach (XWTWeb.Models.TournamentMainRoundTable table in round.Tables)
+                                <div class="card-body row justify-content-center roundtabledatarow">
+
+                                    @*Player 1*@
+                                    <div class="col d-flex justify-content-end">
+                                        <input id="@round.Id-@table.Id-Player1Score" type="number" min="0" max="@Model.TournamentMain.MaxPoints" value="@table.Player1Score" class="form-control text-right p-1" style="max-width:75px;" data-playerid="@table.Player1Id" data-playernumber="1" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-save="score" @(table.Bye ? "disabled" : "") onchange="UpdatePlayerScores(this, @Model.TournamentMain.MaxPoints);" tabindex="@table.Number" />
+                                    </div>
+                                    <button id="@round.Id-@table.Id-Player1Winner" class="col-auto btn p-1 align-self-center @(table.Player1Winner ? "btn-outline-success fas fa-check" : "btn-outline-danger fas fa-times")" @(table.Bye || !table.ScoreTied ? "disabled" : "") data-playerid="@table.Player1Id" data-playernumber="1" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-winner="@table.Player1Winner" onclick="TogglePlayerWinner(this);"></button>
+                                    <label class="h6 col m-0 align-self-center">@table.Player1Name</label>
+
+                                    <div class="col-12 text-center font-italic align-self-center p-0 m-1 h5">
+                                        vs
+                                    </div>
+
+                                    @*Player 2*@
+                                    <div class="col d-flex justify-content-end">
+                                        <input id="@round.Id-@table.Id-Player2Score" type="number" min="0" max="@Model.TournamentMain.MaxPoints" value="@table.Player2Score" class="form-control text-right p-1" style="max-width:75px;" data-playerid="@table.Player2Id" data-playernumber="2" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-save="score" @(table.Bye ? "disabled" : "") onchange="UpdatePlayerScores(this, @Model.TournamentMain.MaxPoints);" tabindex="@table.Number" />
+                                    </div>
+
+                                    <button id="@round.Id-@table.Id-Player2Winner" class="col-auto btn p-1 align-self-center @(table.Player2Winner ? "btn-outline-success fas fa-check" : "btn-outline-danger fas fa-times")" @(table.Bye || !table.ScoreTied ? "disabled" : "") data-playerid="@table.Player2Id" data-playernumber="2" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-winner="@table.Player2Winner" onclick="TogglePlayerWinner(this);"></button>
+                                    <label class="h6 col m-0 align-self-center">@table.Player2Name</label>
+
+                                </div>
+
+                                @*Show option to edit table with only the newest round*@
+                                @if (round.Number == Model.TournamentMain.Rounds.Count)
                                 {
-                                <tr>
-                                    <td>
-                                        <div class="row text-center">
-                                            <label class="col h5">
-                                                Table #@table.Number@(table.Bye ? " (BYE)" : "") - @table.TableName
-                                            </label>
-                                        </div>
-                                        <hr class="m-0 mb-3" />
-                                        <div class="row justify-content-center roundtabledatarow">
-
-                                            @*Player 1*@
-                                            <div class="col d-flex justify-content-end">
-                                                <input id="@round.Id-@table.Id-Player1Score" type="number" min="0" max="@Model.TournamentMain.MaxPoints" value="@table.Player1Score" class="form-control text-right" style="max-width:75px;" data-playerid="@table.Player1Id" data-playernumber="1" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-save="score" @(table.Bye ? "disabled" : "") onchange="UpdatePlayerScores(this, @Model.TournamentMain.MaxPoints);" tabindex="@table.Number" />
-                                            </div>
-                                            <button id="@round.Id-@table.Id-Player1Winner" class="col-auto btn p-1 align-self-center @(table.Player1Winner ? "btn-outline-success fas fa-check" : "btn-outline-danger fas fa-times")" @(table.Bye || !table.ScoreTied ? "disabled" : "") data-playerid="@table.Player1Id" data-playernumber="1" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-winner="@table.Player1Winner" onclick="TogglePlayerWinner(this);"></button>
-                                            <label class="h6 col m-0 align-self-center">@table.Player1Name</label>
-
-                                            @*<div class="w-100"> </div>*@
-                                            <div class="col-12 text-center font-italic align-self-center p-0 m-1 h5">
-                                                vs
-                                            </div>
-                                            @*<div class="w-100"> </div>*@
-
-                                            @*Player 2*@
-                                            <div class="col d-flex justify-content-end">
-                                                <input id="@round.Id-@table.Id-Player2Score" type="number" min="0" max="@Model.TournamentMain.MaxPoints" value="@table.Player2Score" class="form-control text-right" style="max-width:75px;" data-playerid="@table.Player2Id" data-playernumber="2" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-save="score" @(table.Bye ? "disabled" : "") onchange="UpdatePlayerScores(this, @Model.TournamentMain.MaxPoints);" tabindex="@table.Number" />
-                                            </div>
-
-                                            <button id="@round.Id-@table.Id-Player2Winner" class="col-auto btn p-1 align-self-center @(table.Player2Winner ? "btn-outline-success fas fa-check" : "btn-outline-danger fas fa-times")" @(table.Bye || !table.ScoreTied ? "disabled" : "") data-playerid="@table.Player2Id" data-playernumber="2" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-winner="@table.Player2Winner" onclick="TogglePlayerWinner(this);"></button>
-                                            <label class="h6 col m-0 align-self-center">@table.Player2Name</label>
-                                        </div>
-                                    </td>
-                                </tr>
+                                    <div class="card-footer">
+                                        <button class="btn btn-outline-info fas fa-cogs float-right" onclick="SwapPlayersPrompt(@table.RoundId, @table.Id, @table.Player1Id, '@table.Player1Name', @table.Player2Id, '@table.Player2Name');"></button>
+                                    </div>
                                 }
 
-                            </tbody>
-                        </table>
+                            </div>
+                        </div>
+                        
+                        }
+
                     </div>
                 </div>
                 }
@@ -185,6 +187,21 @@
                 </tbody>
             </table>
         </div>
+
+        <select style="display:none;" id="HiddenTournamentPlayers">
+            @if (Model.TournamentMain.Rounds.Count > 0)
+            {
+                foreach (XWTWeb.Models.TournamentMainRoundTable table in Model.TournamentMain.Rounds[Model.TournamentMain.Rounds.Count - 1].Tables)
+                {
+                    <option value="@table.Player1Id">@table.Player1Name</option>
+
+                    if (table.Player2Id > 0)
+                    {
+                        <option value="@table.Player2Id">@table.Player2Name</option>
+                    }
+                }
+            }
+        </select>
     </div>
 </div>
 
@@ -196,6 +213,7 @@
 
     $(document).ready(function () {
         PlayersBtnClick(true);
+        SortSelect($("#HiddenTournamentPlayers"));
     });
 
     function PlayersBtnClick(blnOnLoad) {
@@ -206,12 +224,15 @@
         if (blnOnLoad) blnPlayerSelectClass = !blnPlayerSelectClass;
 
         //This triggers before collapse show has been added/removed, so works "opposite" here
+        //Below class rearrangements help keep the page flowing so things appear correctly while also attempting not to waste any space
         if (blnPlayerSelectClass) {
             $("#playerColumn").addClass('col-lg');
+            $(".carddiv").removeClass('col-xl-4');
             $("#playerColBtn").addClass('btn-secondary').removeClass('btn-outline-secondary');
             $("#standingsColumn").removeClass('col-md-4').removeClass('ml-md-3');
         } else {
             $("#playerColumn").removeClass('col-lg');
+            $(".carddiv").addClass('col-xl-4');
             $("#playerColBtn").removeClass('btn-secondary').addClass('btn-outline-secondary');
             $("#standingsColumn").addClass('col-md-4').addClass('ml-md-3');
         }
@@ -298,7 +319,7 @@
             beforeSend: BBoxLoading,
             complete: function (data) {
                 location.reload();
-                BBoxLoadingClose();
+                //BBoxLoadingClose();
             }
         });
     }
@@ -328,7 +349,7 @@
                         beforeSend: BBoxLoading,
                         complete: function (data) {
                             location.reload();
-                            BBoxLoadingClose();
+                            //BBoxLoadingClose();
                         }
                     });
                 }
@@ -456,7 +477,7 @@
             complete: function (data) {
                 //location.reload();
                 $("#standingsTBody").html(data.responseText);
-                BBoxLoadingClose();
+                //BBoxLoadingClose();
             }
         });
     }
@@ -467,6 +488,12 @@
             btn.addClass(strWinClasses);
             btn.data('winner', 'True');
             btn.attr('data-winner', 'True');
+        }
+
+        //We're setting someone a winner.  Flag the card with the "success" border to help indicate which tables have a winner logged
+        var parentCard = $(btn).closest('.card');
+        if (!parentCard.hasClass('border-success')) {
+            parentCard.removeClass('border-secondary').addClass('border-success');
         }
     }
 
@@ -489,6 +516,73 @@
             callback: function (result) {
                 if (result) {
                     bootbox.alert(result + ' minutes');
+                }
+            }
+        });
+    }
+
+    var arrSwapOptions = new Array();
+
+    function SwapPlayersPrompt(intRoundId, intTableId, intPlayer1Id, strPlayer1Name, intPlayer2Id, strPlayer2Name) {
+        //If we're doing the "first pass" (triggered by onclick), set which players are visible (and then reuse same list for "2nd pass")
+        if (intPlayer2Id != undefined) {
+            arrSwapOptions = new Array();
+
+            //Create an array of input player info, except for the current player we're swapping for
+            $("#HiddenTournamentPlayers option").each(function () {
+                if ($(this).val() != intPlayer1Id && $(this).val() != intPlayer2Id) {
+                    arrSwapOptions.push({
+                        text: $(this).text(),
+                        value: $(this).val()
+                    });
+                }
+            });
+        }
+
+        //Set default values for variables that don't get passed in
+        intPlayer2Id = intPlayer2Id || 0;
+        strPlayer2Name = strPlayer2Name || "";
+
+        //Swap Player prompt
+        bootbox.prompt({
+            title: "<h5 class='text-center'>Swap Player - " + strPlayer1Name + '</h5>',
+            inputType: 'select',
+            closeButton: false,
+            inputOptions: arrSwapOptions,
+            buttons: {
+                cancel: {
+                    label: ((intPlayer2Id == 0) ? 'Cancel' : 'Other Player')
+                },
+                confirm: {
+                    label: 'Save'
+                }
+            },
+            callback: function (result) {
+                if (!result) {
+                    if (intPlayer2Id > 0) {
+                        SwapPlayersPrompt(intRoundId, intTableId, intPlayer2Id, strPlayer2Name);
+                    }
+                } else {
+                    //bootbox.alert('Swap ' + intPlayer1Id + ' w/ ' + result);
+
+                    $.ajax({
+                        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                        dataType: "json",
+                        type: "POST",
+                        url: "/TournamentActivity/SwapTablePlayers",
+                        data: {
+                            roundId: intRoundId,
+                            tableId: intTableId,
+                            originalPlayerId: intPlayer1Id,
+                            newPlayerId: result
+                        },
+                        beforeSend: BBoxLoading,
+                        complete: function (data) {
+                            location.reload();
+                        }
+                    });
+
+
                 }
             }
         });
