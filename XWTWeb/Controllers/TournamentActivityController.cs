@@ -423,6 +423,8 @@ namespace XWTWeb.Controllers
                 var request = new RestRequest("TournamentsRounds/{userid}/{id}", Method.PUT);
                 request.AddUrlSegment("userid", Utilities.CurrentUser.Id);
                 request.AddUrlSegment("id", result.RoundId);
+                result.Player1Name = "";
+                result.Player2Name = "";
                 request.AddJsonBody(JsonConvert.SerializeObject(result));
 
                 // execute the request
@@ -549,9 +551,9 @@ namespace XWTWeb.Controllers
                         request.AddUrlSegment("id", table.RoundId);
                         request.AddJsonBody(JsonConvert.SerializeObject(table));
 
-                        //// execute the request
-                        //IRestResponse response = client.Execute(request);
-                        //var content = response.Content; // raw content as string
+                        // execute the request
+                        IRestResponse response = client.Execute(request);
+                        var content = response.Content; // raw content as string
                     }
 
                     return "Player Swap SUCCESS";
