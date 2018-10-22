@@ -11,6 +11,7 @@ namespace XWTWeb.Models
         public List<Player> AllPlayers { get; set; }
         public List<Player> NextRoundPlayers { get; set; }
         public TournamentMain TournamentMain { get; set; }
+        public bool SwissMode { get; set; } = true;
 
         public int GetPlayerTotal()
         {

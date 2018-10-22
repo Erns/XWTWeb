@@ -99,8 +99,11 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Options</a>
                     <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 42px, 0px);">
-                        <a class="dropdown-item" href="#" onclick="StartNextRound(event, true, @Model.TournamentMain.Rounds.Count, @(Model.TournamentMain.Rounds.Count > 0 ? Model.TournamentMain.Rounds[Model.TournamentMain.Rounds.Count - 1].Id : 0));">Start Next Round</a>
-                        <a class="dropdown-item" href="#" onclick="StartTopCut(event);">Start Top Cut</a>
+                        <a class="dropdown-item" href="#" onclick="StartNextRound(event, '@(Model.SwissMode ? Model.SwissMode.ToString() : true.ToString())', @Model.TournamentMain.Rounds.Count);">Start Next Round</a>
+                        @if (Model.SwissMode)
+                        {
+                            <a class="dropdown-item" href="#" onclick="StartTopCut(event, @Model.TournamentMain.Rounds.Count);">Start Top Cut</a>
+                        }
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="#" onclick="DeleteLastRound(event, @Model.TournamentMain.Rounds.Count, @(Model.TournamentMain.Rounds.Count > 0 ? Model.TournamentMain.Rounds[Model.TournamentMain.Rounds.Count - 1].Id : 0));">Delete Last Round</a>
                         <div class="dropdown-divider"></div>
@@ -147,7 +150,7 @@
                                 </div>
 
                                 @*Show option to edit table with only the newest round*@
-                                @if (round.Number == Model.TournamentMain.Rounds.Count)
+                                @if (round.Number == Model.TournamentMain.Rounds.Count && round.Tables.Count > 1)
                                 {
                                     <div class="card-footer">
                                         <button class="btn btn-outline-info fas fa-cogs float-right" onclick="SwapPlayersPrompt(@table.RoundId, @table.Id, @table.Player1Id, '@table.Player1Name', @table.Player2Id, '@table.Player2Name');"></button>
@@ -268,7 +271,8 @@
     }
 
     //Rounds - Add/Remove
-    function StartNextRound(e, blnSwiss, intRoundCount, intRoundId) {
+    function StartNextRound(e, blnSwiss, intRoundCount, intTopCut) {
+        intTopCut = intTopCut || 0;
         e.stopPropagation();
 
         //Make sure we have players for the next round
@@ -315,7 +319,7 @@
             dataType: "json",
             type: "POST",
             url: "/TournamentActivity/AddNewRound",
-            data: { swiss: blnSwiss, activePlayers: JSON.stringify(jsonData) },
+            data: { swiss: blnSwiss, topCut: intTopCut, activePlayers: JSON.stringify(jsonData) },
             beforeSend: BBoxLoading,
             complete: function (data) {
                 location.reload();
@@ -325,7 +329,7 @@
     }
 
     //Rounds - Prompt Top Cut
-    function StartTopCut(e) {
+    function StartTopCut(e, intRoundCount) {
         e.stopPropagation();
 
         bootbox.prompt({
@@ -349,24 +353,7 @@
             ],
             callback: function (result) {
                 if (result) {
-
-                    $.ajax({
-                        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-                        dataType: "json",
-                        type: "POST",
-                        url: "/TournamentActivity/SwapTablePlayers",
-                        data: {
-                            //roundId: intRoundId,
-                            //tableId: intTableId,
-                            //originalPlayerId: intPlayer1Id,
-                            //newPlayerId: result
-                        },
-                        beforeSend: BBoxLoading,
-                        complete: function (data) {
-                            location.reload();
-                        }
-                    });
-
+                    StartNextRound(e, false, intRoundCount, result);
                 }
             }
         });

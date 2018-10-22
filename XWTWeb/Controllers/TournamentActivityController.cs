@@ -105,6 +105,10 @@ namespace XWTWeb.Controllers
             //objTournActivity.Standings = objTournMain.Players.OrderBy(obj => obj.Rank).ToList();
             objTournActivity.TournamentMain = objTournMain;
 
+            if (objTournMain.Rounds.Count > 0)
+                objTournActivity.SwissMode = objTournMain.Rounds[objTournMain.Rounds.Count - 1].Swiss;
+
+
             return View(objTournActivity);
         }
 
@@ -112,7 +116,7 @@ namespace XWTWeb.Controllers
 
         #region Setup Round
 
-        public ActionResult AddNewRound(bool swiss, string activePlayers)
+        public ActionResult AddNewRound(bool swiss, int topCut, string activePlayers)
         {
 
             List<TournamentMainPlayer> result = JsonConvert.DeserializeObject<List<TournamentMainPlayer>>(activePlayers);
@@ -172,13 +176,13 @@ namespace XWTWeb.Controllers
             var content = response.Content;
 
             //Start up the next round
-            StartRound(swiss, 0);
+            StartRound(swiss, topCut);
 
             return View(objTournActivity);
             
         }
 
-        private void StartRound(bool blnSwiss, int intTableCount)
+        private void StartRound(bool blnSwiss, int intTopCut)
         {
             //Create a new round
             TournamentMainRound round = new TournamentMainRound();
@@ -192,7 +196,7 @@ namespace XWTWeb.Controllers
             if (blnSwiss)
                 SetupSwissPlayers(ref lstActiveTournamentPlayers, ref lstActiveTournamentPlayers_Byes);
             else
-                SetupSingleEliminationPlayers(ref lstActiveTournamentPlayers, intTableCount);
+                SetupSingleEliminationPlayers(ref lstActiveTournamentPlayers, intTopCut);
 
             //Create each table, pair 'em up
             TournamentMainRoundTable roundTable = new TournamentMainRoundTable();
@@ -386,18 +390,20 @@ namespace XWTWeb.Controllers
             }
         }
 
-        private void SetupSingleEliminationPlayers(ref List<TournamentMainPlayer> lstActiveTournamentPlayers, int intTableCount)
+        private void SetupSingleEliminationPlayers(ref List<TournamentMainPlayer> lstActiveTournamentPlayers, int intTopCut)
         {
-            if (intTableCount == 0 && objTournMain.Rounds.Count > 0)
+
+            //If we're not passing in the top cut, we need the rankings of players for the next set (So if we've wrapped up the "top 4" with 2 tables, we just so happen to need to the "top 2")
+            if (intTopCut == 0 && objTournMain.Rounds.Count > 0)
             {
-                intTableCount = objTournMain.Rounds[objTournMain.Rounds.Count - 1].Tables.Count;
+                intTopCut = objTournMain.Rounds[objTournMain.Rounds.Count - 1].Tables.Count;
             }
 
             //Recalculate the latest scores, grab the top number of players that qualify for the number of tables
             Utilities.CalculatePlayerScores(ref objTournMain);
             List<TournamentMainPlayer> lstTmpPlayers = new List<TournamentMainPlayer>();
 
-            lstTmpPlayers = objTournMain.Players.OrderBy(obj => obj.Rank).AsQueryable().Where(obj => obj.Rank <= (intTableCount)).ToList();
+            lstTmpPlayers = objTournMain.Players.OrderBy(obj => obj.Rank).AsQueryable().Where(obj => obj.Rank <= (intTopCut)).ToList();
 
             while (lstTmpPlayers.Count > 0)
             {
