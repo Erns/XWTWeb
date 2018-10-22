@@ -87,11 +87,11 @@
                 <li class="nav-item">
                     @if (round.Number == Model.TournamentMain.Rounds.Count)
                     {
-                        <a class="nav-link active" data-toggle="tab" href="#RoundTab-@round.Number">Round @round.Number</a>
+                    <a class="nav-link active" data-toggle="tab" href="#RoundTab-@round.Number">Round @round.Number @(!round.Swiss ? " - S.E." : "")</a>
                     }
                     else
                     {
-                        <a class="nav-link" data-toggle="tab" href="#RoundTab-@round.Number">Round @round.Number</a>
+                        <a class="nav-link" data-toggle="tab" href="#RoundTab-@round.Number">Round @round.Number @(!round.Swiss ? " - S.E." : "")</a>
                     }
                 </li>
                 }
@@ -99,7 +99,10 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Options</a>
                     <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 42px, 0px);">
-                        <a class="dropdown-item" href="#" onclick="StartNextRound(event, '@(Model.SwissMode ? Model.SwissMode.ToString() : true.ToString())', @Model.TournamentMain.Rounds.Count);">Start Next Round</a>
+                        @if (Model.CurrentTableCount > 1)
+                        {
+                            <a class="dropdown-item" href="#" onclick="StartNextRound(event, '@Model.SwissMode.ToString()', @Model.TournamentMain.Rounds.Count);">Start Next Round</a>
+                        }
                         @if (Model.SwissMode)
                         {
                             <a class="dropdown-item" href="#" onclick="StartTopCut(event, @Model.TournamentMain.Rounds.Count);">Start Top Cut</a>
@@ -117,7 +120,7 @@
                 @foreach (XWTWeb.Models.TournamentMainRound round in Model.TournamentMain.Rounds)
                 {
                 <div class="tab-pane fade container-fluid @(round.Number == Model.TournamentMain.Rounds.Count ? "show active" : "" ) " id="RoundTab-@round.Number">
-                    <div class="row pt-3 justify-content-center">
+                    <div class="row pt-3 pb-5 justify-content-center">
                         @foreach(XWTWeb.Models.TournamentMainRoundTable table in round.Tables)
                         {
                         <div class="carddiv col-12 col-lg-6 col-xl-4 p-0 m-0">

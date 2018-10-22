@@ -106,7 +106,10 @@ namespace XWTWeb.Controllers
             objTournActivity.TournamentMain = objTournMain;
 
             if (objTournMain.Rounds.Count > 0)
+            {
                 objTournActivity.SwissMode = objTournMain.Rounds[objTournMain.Rounds.Count - 1].Swiss;
+                objTournActivity.CurrentTableCount = objTournMain.Rounds[objTournMain.Rounds.Count - 1].Tables.Count;
+            }
 
 
             return View(objTournActivity);
