@@ -35,7 +35,7 @@
                     <tbody>
                         @foreach (XWTWeb.Models.TournamentMain tournament in Model)
                         {
-                            if (tournament.StartDate >= DateTime.Now)
+                            if (tournament.StartDate >= DateTime.Today)
                             {
                                 <tr id="tournamentMainTableRow_@tournament.Id" data-tournamentid="@tournament.Id" style="cursor:pointer;" onclick="BBoxLoading(); location.href = '@(Url.Action("TournamentActivityMain", "TournamentActivity", new { id = tournament.Id }))'">
                                     <td>@tournament.Name</td>
@@ -65,7 +65,7 @@
                     <tbody>
                         @foreach (XWTWeb.Models.TournamentMain tournament in Model)
                         {
-                            if (tournament.StartDate < DateTime.Now)
+                            if (tournament.StartDate < DateTime.Today)
                             {
                                 <tr id="tournamentMainTableRow_@tournament.Id" data-tournamentid="@tournament.Id" style="cursor:pointer;" onclick="location.href = '@(Url.Action("TournamentActivityMain", "TournamentActivity", new { id = tournament.Id }))'">
                                     <td>@tournament.Name</td>

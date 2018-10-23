@@ -31,7 +31,7 @@ namespace XWTWeb.Models
             {
                 strHTML += "<tr>";
                 strHTML += string.Format("<td>{0}</td>", player.Rank);
-                strHTML += string.Format("<td>{0}</td>", player.PlayerName);
+                strHTML += string.Format("<td>{0}{1}</td>", player.PlayerName, (!player.Active ? " (DROPPED)":""));
                 strHTML += string.Format("<td>{0}</td>", player.Score);
                 strHTML += string.Format("<td>{0}</td>", player.MOV);
                 strHTML += string.Format("<td>{0}</td>", player.SOS);
