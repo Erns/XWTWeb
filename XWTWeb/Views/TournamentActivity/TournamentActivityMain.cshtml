@@ -132,23 +132,22 @@
                                 <div class="card-body row justify-content-center roundtabledatarow">
 
                                     @*Player 1*@
-                                    <div class="col d-flex justify-content-end">
-                                        <input id="@round.Id-@table.Id-Player1Score" type="number" min="0" max="@Model.TournamentMain.MaxPoints" value="@table.Player1Score" class="form-control text-right p-1" style="max-width:75px;" data-playerid="@table.Player1Id" data-playernumber="1" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-save="score" @(table.Bye ? "disabled" : "") onchange="UpdatePlayerScores(this, @Model.TournamentMain.MaxPoints);" tabindex="@table.Number" />
-                                    </div>
+                                    <label class="h6 col m-0 align-self-center d-flex justify-content-end">@table.Player1Name</label>
                                     <button id="@round.Id-@table.Id-Player1Winner" class="col-auto btn p-1 align-self-center @(table.Player1Winner ? "btn-outline-success fas fa-check" : "btn-outline-danger fas fa-times")" @(table.Bye || !table.ScoreTied ? "disabled" : "") data-playerid="@table.Player1Id" data-playernumber="1" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-winner="@table.Player1Winner" onclick="TogglePlayerWinner(this);"></button>
-                                    <label class="h6 col m-0 align-self-center">@table.Player1Name</label>
+                                    <div class="col d-flex justify-content-start">
+                                        <input id="@round.Id-@table.Id-Player1Score" type="number" min="0" max="@Model.TournamentMain.MaxPoints" value="@table.Player1Score" class="form-control p-1" style="max-width:75px;" data-playerid="@table.Player1Id" data-playernumber="1" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-save="score" @(table.Bye ? "disabled" : "") onchange="UpdatePlayerScores(this, @Model.TournamentMain.MaxPoints);" tabindex="@table.Number" />
+                                    </div>
 
                                     <div class="col-12 text-center font-italic align-self-center p-0 m-1 h5">
                                         vs
                                     </div>
 
                                     @*Player 2*@
-                                    <div class="col d-flex justify-content-end">
-                                        <input id="@round.Id-@table.Id-Player2Score" type="number" min="0" max="@Model.TournamentMain.MaxPoints" value="@table.Player2Score" class="form-control text-right p-1" style="max-width:75px;" data-playerid="@table.Player2Id" data-playernumber="2" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-save="score" @(table.Bye ? "disabled" : "") onchange="UpdatePlayerScores(this, @Model.TournamentMain.MaxPoints);" tabindex="@table.Number" />
-                                    </div>
-
+                                    <label class="h6 col m-0 align-self-center d-flex justify-content-end">@table.Player2Name</label>
                                     <button id="@round.Id-@table.Id-Player2Winner" class="col-auto btn p-1 align-self-center @(table.Player2Winner ? "btn-outline-success fas fa-check" : "btn-outline-danger fas fa-times")" @(table.Bye || !table.ScoreTied ? "disabled" : "") data-playerid="@table.Player2Id" data-playernumber="2" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-winner="@table.Player2Winner" onclick="TogglePlayerWinner(this);"></button>
-                                    <label class="h6 col m-0 align-self-center">@table.Player2Name</label>
+                                    <div class="col d-flex justify-content-start">
+                                        <input id="@round.Id-@table.Id-Player2Score" type="number" min="0" max="@Model.TournamentMain.MaxPoints" value="@table.Player2Score" class="form-control p-1" style="max-width:75px;" data-playerid="@table.Player2Id" data-playernumber="2" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-save="score" @(table.Bye ? "disabled" : "") onchange="UpdatePlayerScores(this, @Model.TournamentMain.MaxPoints);" tabindex="@table.Number" />
+                                    </div>
 
                                 </div>
 

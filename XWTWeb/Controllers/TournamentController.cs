@@ -48,6 +48,38 @@ namespace XWTWeb.Controllers
             return View(tournaments.ToList());
         }
 
+        public ActionResult DeleteTournament(int id)
+        {
+
+
+            try
+            {
+                if (id > 0)
+                {
+                    var request = new RestRequest("Tournaments/{userid}/{id}", Method.DELETE);
+                    request.AddUrlSegment("userid", Utilities.CurrentUser.Id);
+                    request.AddUrlSegment("id", id);
+
+                    // execute the request
+                    IRestResponse response = client.Execute(request);
+                    var content = response.Content;
+
+                    //List<TournamentMain> result = JsonConvert.DeserializeObject<List<TournamentMain>>(JsonConvert.DeserializeObject(content).ToString());
+
+                    ////Didn't actually get a result (such as trying to access a tournament not "owned" by user).  Kick back to Main page
+                    //if (result.Count == 0)
+                    //    return RedirectToAction("TournamentMain", "Tournament");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Write(string.Format("PlayerController.Main{0}DeleteTournament:{1}", Environment.NewLine, ex.Message));
+                return RedirectToAction("TournamentMain", "Tournament");
+            }
+
+            return RedirectToAction("TournamentMain", "Tournament");
+        }
+
 
         public ActionResult TournamentAddEdit(int id)
         {
@@ -86,6 +118,7 @@ namespace XWTWeb.Controllers
 
             return View(tournament);
         }
+
 
         [HttpPost]
         public ActionResult TournamentAddEdit(TournamentMain tournament)

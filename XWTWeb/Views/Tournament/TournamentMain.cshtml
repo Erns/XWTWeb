@@ -41,7 +41,7 @@
                                     <td>@tournament.Name</td>
                                     <td>@tournament.StartDate.Value.ToString("MM/dd/yyyy")</td>
                                     <td class="d-flex justify-content-center align-content-center">
-                                        <a href="#" title="Delete" style="font-weight:bold" class="btn btn-danger fas fa-trash-alt m-1 p-2" onclick="alert('test 1');"></a>
+                                        <a href="#" title="Delete" style="font-weight:bold" class="btn btn-danger fas fa-trash-alt m-1 p-2" onclick="DeleteTournament(event, '@Html.Encode(tournament.Name)', @tournament.Id);"></a>
                                         @Html.ActionLink(" ", "TournamentAddEdit", "Tournament", routeValues: new { id = tournament.Id }, htmlAttributes: new { @style = "font-weight:bold", @class = "btn btn-info fas fa-cogs m-1 p-2" })
                                     </td>
                                 </tr>
@@ -71,7 +71,7 @@
                                     <td>@tournament.Name</td>
                                     <td>@tournament.StartDate.Value.ToString("MM/dd/yyyy")</td>
                                     <td class="d-flex justify-content-center align-content-center">
-                                        <a href="#" title="Delete" style="font-weight:bold" class="btn btn-danger fas fa-trash-alt m-1 p-2" onclick="alert('test 1');"></a>
+                                        <a href="#" title="Delete" style="font-weight:bold" class="btn btn-danger fas fa-trash-alt m-1 p-2" onclick="DeleteTournament(event, '@Html.Encode(tournament.Name)', @tournament.Id);"></a>
                                         @Html.ActionLink(" ", "TournamentAddEdit", "Tournament", routeValues: new { id = tournament.Id }, htmlAttributes: new { @style = "font-weight:bold", @class = "btn btn-secondary fas fa-cogs m-1 p-2" })
                                     </td>
                                 </tr>
@@ -104,4 +104,29 @@
 
         $(".dataTables_wrapper").css("width", "100%");
     });
+
+    function DeleteTournament(e, strName, intId) {
+        e.stopPropagation();
+
+        bootbox.confirm({
+            message: "Delete tournament, '" + strName + "'?",
+            callback: function (result) {
+                if (result) {
+                    //Delete last round
+                    $.ajax({
+                        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                        dataType: "json",
+                        type: "POST",
+                        url: "/Tournament/DeleteTournament",
+                        data: { id: intId },
+                        beforeSend: BBoxLoading,
+                        complete: function (data) {
+                            location.reload();
+                            //BBoxLoadingClose();
+                        }
+                    });
+                }
+            }
+        })
+    }
 </script>
