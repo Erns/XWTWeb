@@ -30,7 +30,19 @@
 
                     <div class="container">
                         <div class="row">
-                            All Players
+                            <div class="col-auto">
+                                <label>
+                                    All Players
+                                </label>
+                            </div>
+                            <div class="col-12">
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" placeholder="Search" onkeyup="UpdateAllPlayersShowing(this.value);" />
+                                    <div class="input-group-append d-none d-md-flex">
+                                        <div class="input-group-text d-flex fas fa-search"></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -243,17 +255,32 @@
         }
     }
 
+    //Players - Search
+    function UpdateAllPlayersShowing(strValue) {
+        $("#tournamentAllPlayersList").val('');
+        $("#tournamentAllPlayersList option").each(function () {
+            $(this).show();
+            if (strValue != "") {
+                if ($(this).text().toUpperCase().indexOf(strValue.toUpperCase()) < 0) {
+                    $(this).hide();
+                }
+            }
+        });
+    }
+
     //Players - Add/Remove
     function AddAllPlayers() {
-        $("#tournamentAllPlayersList").find('option').clone().appendTo("#tournamentActivePlayersList");
-        $("#tournamentAllPlayersList").empty(); 
+        $("#tournamentAllPlayersList").find('option:visible').clone().appendTo("#tournamentActivePlayersList");
+        $("#tournamentAllPlayersList").find('option:visible').remove(); 
         SortSelect($("#tournamentActivePlayersList"));
     }
 
     function AddSelectedPlayers() {
         $("#tournamentAllPlayersList option:selected").each(function () {
-            $(this).clone().appendTo("#tournamentActivePlayersList");
-            $(this).remove();
+            if ($(this).is(':visible')) {
+                $(this).clone().appendTo("#tournamentActivePlayersList");
+                $(this).remove();
+            }
         });
         SortSelect($("#tournamentActivePlayersList"));
     }
