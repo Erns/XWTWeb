@@ -12,7 +12,7 @@
         @*Player Column*@
         <div id="playerColumn" class="col-12 col-lg mr-1 pb-3">
             <div class="row bg-white">
-                <button id="playerColBtn" class="col btn btn-secondary text-left pt-0" style="font-size:x-large;" data-toggle="collapse" data-target="#tournamentPlayerSelect" aria-expanded="true" aria-controls="tournamentPlayerSelect" onclick="PlayersBtnClick();">
+                <button type="button" id="playerColBtn" class="col btn btn-secondary text-left pt-0" style="font-size:x-large;" data-toggle="collapse" data-target="#tournamentPlayerSelect" aria-expanded="true" aria-controls="tournamentPlayerSelect" onclick="PlayersBtnClick();">
                     Players
                 </button>
             </div>
@@ -60,10 +60,10 @@
                 @*Player Button Group*@
                 <div class="col-1 m-0 p-0 d-flex align-middle">
                     <div class="btn-group-vertical col m-0 p-0" role="group">
-                        <button class="fas fa-angle-double-right btn btn-outline-info" onclick="AddAllPlayers();">&nbsp;</button>
-                        <button class="fas fa-angle-right btn btn-outline-info" onclick="AddSelectedPlayers();">&nbsp;</button>
-                        <button class="fas fa-angle-left btn btn-outline-info" onclick="RemoveSelectedPlayers();">&nbsp;</button>
-                        <button class="fas fa-angle-double-left btn btn-outline-info" onclick="RemoveAllPlayers();">&nbsp;</button>
+                        <button type="button" class="fas fa-angle-double-right btn btn-outline-info" onclick="AddAllPlayers();">&nbsp;</button>
+                        <button type="button" class="fas fa-angle-right btn btn-outline-info" onclick="AddSelectedPlayers();">&nbsp;</button>
+                        <button type="button" class="fas fa-angle-left btn btn-outline-info" onclick="RemoveSelectedPlayers();">&nbsp;</button>
+                        <button type="button" class="fas fa-angle-double-left btn btn-outline-info" onclick="RemoveAllPlayers();">&nbsp;</button>
                     </div>
                 </div>
 
@@ -71,7 +71,26 @@
                 <div class="h5 col m-2 p-2 border border-secondary rounded bg-white">
                     <div class="container">
                         <div class="row">
-                            Next Round
+                            <div class="col col-md-auto">
+                                <label>
+                                    Next Round
+                                </label>
+                            </div>
+                            <div class="col-12">
+                                <div class="input-group justify-content-center">
+                                    <div class="input-group-prepend align-self-center">
+                                        <label class="input-group-text">Byes:</label>
+                                    </div>
+                                    <div class="btn-group btn-group-sm btn-group-vertical d-lg-none" id="ByeBtnGroup" role="group">
+                                        <button type="button" class="btn btn-secondary" onclick="ClearPlayerByes();">Clear</button>
+                                        <button type="button" class="btn btn-secondary" onclick="SelectPlayerByes();">Select</button>
+                                    </div>
+                                    <div class="btn-group btn-group-sm d-none d-lg-flex" id="ByeBtnGroup" role="group">
+                                        <button type="button" class="btn btn-secondary" onclick="ClearPlayerByes();">Clear</button>
+                                        <button type="button" class="btn btn-secondary" onclick="SelectPlayerByes();">Select</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -145,7 +164,7 @@
 
                                     @*Player 1*@
                                     <label class="h6 col m-0 align-self-center d-flex justify-content-end">@table.Player1Name</label>
-                                    <button id="@round.Id-@table.Id-Player1Winner" class="col-auto btn p-1 align-self-center @(table.Player1Winner ? "btn-outline-success fas fa-check" : "btn-outline-danger fas fa-times")" @(table.Bye || !table.ScoreTied ? "disabled" : "") data-playerid="@table.Player1Id" data-playernumber="1" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-winner="@table.Player1Winner" onclick="TogglePlayerWinner(this);"></button>
+                                    <button type="button" id="@round.Id-@table.Id-Player1Winner" class="col-auto btn p-1 align-self-center @(table.Player1Winner ? "btn-outline-success fas fa-check" : "btn-outline-danger fas fa-times")" @(table.Bye || !table.ScoreTied ? "disabled" : "") data-playerid="@table.Player1Id" data-playernumber="1" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-winner="@table.Player1Winner" onclick="TogglePlayerWinner(this);"></button>
                                     <div class="col d-flex justify-content-start">
                                         <input id="@round.Id-@table.Id-Player1Score" type="number" min="0" max="@Model.TournamentMain.MaxPoints" value="@table.Player1Score" class="form-control p-1" style="max-width:75px;" data-playerid="@table.Player1Id" data-playernumber="1" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-save="score" @(table.Bye ? "disabled" : "") onchange="UpdatePlayerScores(this, @Model.TournamentMain.MaxPoints);" tabindex="@table.Number" />
                                     </div>
@@ -156,7 +175,7 @@
 
                                     @*Player 2*@
                                     <label class="h6 col m-0 align-self-center d-flex justify-content-end">@table.Player2Name</label>
-                                    <button id="@round.Id-@table.Id-Player2Winner" class="col-auto btn p-1 align-self-center @(table.Player2Winner ? "btn-outline-success fas fa-check" : "btn-outline-danger fas fa-times")" @(table.Bye || !table.ScoreTied ? "disabled" : "") data-playerid="@table.Player2Id" data-playernumber="2" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-winner="@table.Player2Winner" onclick="TogglePlayerWinner(this);"></button>
+                                    <button type="button" id="@round.Id-@table.Id-Player2Winner" class="col-auto btn p-1 align-self-center @(table.Player2Winner ? "btn-outline-success fas fa-check" : "btn-outline-danger fas fa-times")" @(table.Bye || !table.ScoreTied ? "disabled" : "") data-playerid="@table.Player2Id" data-playernumber="2" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-winner="@table.Player2Winner" onclick="TogglePlayerWinner(this);"></button>
                                     <div class="col d-flex justify-content-start">
                                         <input id="@round.Id-@table.Id-Player2Score" type="number" min="0" max="@Model.TournamentMain.MaxPoints" value="@table.Player2Score" class="form-control p-1" style="max-width:75px;" data-playerid="@table.Player2Id" data-playernumber="2" data-roundid="@round.Id" data-tableid="@table.Id" data-roundnumber="@round.Number" data-tablenumber="@table.Number" data-save="score" @(table.Bye ? "disabled" : "") onchange="UpdatePlayerScores(this, @Model.TournamentMain.MaxPoints);" tabindex="@table.Number" />
                                     </div>
@@ -167,7 +186,7 @@
                                 @if (round.Number == Model.TournamentMain.Rounds.Count && round.Tables.Count > 1)
                                 {
                                     <div class="card-footer">
-                                        <button class="btn btn-outline-info fas fa-cogs float-right" onclick="SwapPlayersPrompt(@table.RoundId, @table.Id, @table.Player1Id, '@table.Player1Name', @table.Player2Id, '@table.Player2Name');"></button>
+                                        <button type="button" class="btn btn-outline-info fas fa-cogs float-right" onclick="SwapPlayersPrompt(@table.RoundId, @table.Id, @table.Player1Id, '@table.Player1Name', @table.Player2Id, '@table.Player2Name');"></button>
                                     </div>
                                 }
 
@@ -286,17 +305,34 @@
     }
 
     function RemoveAllPlayers() {
-        $("#tournamentActivePlayersList").find('option').clone().appendTo("#tournamentAllPlayersList");
+        $("#tournamentActivePlayersList").find('option').removeClass('playerByeClass').clone().appendTo("#tournamentAllPlayersList");
         $("#tournamentActivePlayersList").empty();    
         SortSelect($("#tournamentAllPlayersList"));
     }
 
     function RemoveSelectedPlayers() {
         $("#tournamentActivePlayersList option:selected").each(function () {
+            $(this).removeClass('playerByeClass');
             $(this).clone().appendTo("#tournamentAllPlayersList");
             $(this).remove();
         });
         SortSelect($("#tournamentAllPlayersList"));
+    }
+
+    //Players - Clear Byes
+    function ClearPlayerByes() {
+        $("#tournamentActivePlayersList option").each(function () {
+            $(this).removeClass('playerByeClass');
+        });
+    }
+
+    //Players - Select Byes
+    function SelectPlayerByes() {
+        $("#tournamentActivePlayersList option:selected").each(function () {
+            $(this).removeClass('playerByeClass');
+            $(this).addClass('playerByeClass');
+        });
+        $("#tournamentActivePlayersList").val('');
     }
 
     //Rounds - Add/Remove
@@ -336,8 +372,10 @@
                 TournamentId: 0,
                 PlayerId: $(this).val(),
                 PlayerName: $(this).text(),
-                Active: true
+                Active: true,
+                Bye: (($(this).hasClass('playerByeClass')) ? true : false)
             };
+
             jsonData.push(player);
         });
 

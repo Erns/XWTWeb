@@ -139,6 +139,7 @@ namespace XWTWeb.Controllers
                     {
                         resultPlayer.Id = currentPlayer.Id;
                         currentPlayer.Active = true;
+                        currentPlayer.Bye = resultPlayer.Bye;
                         break;
                     }
                 }
@@ -160,7 +161,8 @@ namespace XWTWeb.Controllers
                                 TournamentId = tournamentId,
                                 PlayerId = player.Id,
                                 PlayerName = player.Name,
-                                Active = true
+                                Active = true,
+                                Bye = resultPlayer.Bye
                             };
 
                             objTournActivity.TournamentMain.Players.Add(newNextRoundPlayer);
@@ -246,6 +248,7 @@ namespace XWTWeb.Controllers
                     roundTable = new TournamentMainRoundTable();
                     roundTable.Number = round.Tables.Count + 1;
                     roundTable.Player1Id = player.PlayerId;
+                    roundTable.Player1Name = player.PlayerName;
                     roundTable.Bye = true;
                     roundTable.Player1Score = objTournMain.MaxPoints / 2;
                     roundTable.Player1Winner = true;
