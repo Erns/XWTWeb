@@ -16,7 +16,7 @@ namespace XWTWeb.Models
         public int MaxPoints { get; set; }
         public int RoundTimeLength { get; set; }
         public Nullable<DateTime> DateDeleted { get; set; } = null;
-        public bool PublishOnline { get; set; } = false;
+        public bool PublicSearch { get; set; } = false;
 
         public List<TournamentMainPlayer> Players { get; set; } = new List<TournamentMainPlayer>();
 
