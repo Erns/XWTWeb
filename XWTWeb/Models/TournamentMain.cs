@@ -74,7 +74,8 @@ namespace XWTWeb.Models
         public int MOV { get; set; } = 0;
         public decimal SOS { get; set; } = 0;
 
-        public int UserAccountId { get; set; } = 0;
+        public int API_Id { get; set; } = 0;
+        public int API_UserAccountId { get; set; } = 0;
 
     }
 
