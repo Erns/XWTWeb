@@ -21,7 +21,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div onclick="BBoxLoading();">
-                    @Html.ActionLink("  XWing Tournament", "PlayerMain", "Player", new { area = "" }, new { @class = "navbar-brand align-self-center fab fa-phoenix-squadron" })
+                    @Html.ActionLink("  XWing Tournament", "PlayerMain", "Player", new { area = "" }, new { @onclick = "ConfirmChangesMade(event);", @class = "navbar-brand align-self-center fab fa-phoenix-squadron" })
                 </div>
 
             </div>
@@ -29,8 +29,8 @@
             @if (System.Web.HttpContext.Current.User.Identity.IsAuthenticated) { 
                 <div class="navbar-collapse collapse pl-3">
                     <ul class="navbar-nav mr-auto">
-                        <li class="nav-item" onclick="BBoxLoading();">@Html.ActionLink("Players", "PlayerMain", "Player", new { area = "" }, new { @class = "nav-link" })</li>
-                        <li class="nav-item" onclick="BBoxLoading();">@Html.ActionLink("Tournaments", "TournamentMain", "Tournament", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li class="nav-item" onclick="BBoxLoading();">@Html.ActionLink("Players", "PlayerMain", "Player", new { area = "" }, new { @onclick = "ConfirmChangesMade(event);", @class = "nav-link" })</li>
+                        <li class="nav-item" onclick="BBoxLoading();">@Html.ActionLink("Tournaments", "TournamentMain", "Tournament", new { area = "" }, new { @onclick = "ConfirmChangesMade(event);", @class = "nav-link" })</li>
                     </ul>
                 </div>
 
@@ -51,7 +51,11 @@
 
 
     <script type="text/javascript">
+        var _isDirty = false;
+        var _currentPage = "";
+
         $(document).ready(function () {
+            _isDirty = false;
             $('[data-toggle="tooltip"]').tooltip();
         });
 
@@ -65,6 +69,46 @@
                     location.reload();
                 }
             });
+        }
+
+        function IsDirty() {
+            return _isDirty;
+        }
+
+        function ChangesMade() {
+            _isDirty = true;
+        }
+
+        function SetCurrentPage(strPage) {
+            _currentPage = strPage;
+        }
+
+        function GetCurrentPage() {
+            return _currentPage;
+        }
+
+        function ConfirmChangesMade(e) {
+            switch (GetCurrentPage()) {
+                case "PlayerMain":
+                    if (IsDirty()) {
+                        bootbox.confirm({
+                            size: "small",
+                            message: "Would you like to save changes made to this page?",
+                            callback: function (result) {
+                                if (result) {
+                                    UpdatePlayer();
+                                }
+                                else {
+                                    //proceed somehow
+                                }
+                            }
+                        });
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+
+                    break;
+            }
         }
 
     </script>

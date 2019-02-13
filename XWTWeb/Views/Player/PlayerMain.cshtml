@@ -17,7 +17,7 @@
             </div>
         </div>
         <div class="row pt-2">
-            <table id="playerMainTable" class="table pl-4 pr-4 table-sm table-hover table-striped">
+            <table id="playerMainTable" class="table table-responsive-sm pl-4 pr-4 table-sm table-hover table-striped">
                 <thead class="thead-light">
                     <tr>
                         <th scope="col">Name</th>
@@ -65,6 +65,8 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
+        SetCurrentPage("PlayerMain");
+
         /* Create an array with the values of all the input boxes in a column */
         $.fn.dataTable.ext.order['dom-text'] = function (settings, col) {
             return this.api().column(col, { order: 'index' }).nodes().map(function (td, i) {
@@ -83,6 +85,9 @@
         $(".dataTables_wrapper").css("width", "100%");
         $("#playerMainTable_length").addClass("pl-md-4");
         $("#playerMainTable_filter").addClass("pr-md-4");
+
+        //window.addEventListener('beforeunload', function (e) { confirmNavigation(e); });
+       
     });
 
     //Add new player row
@@ -95,6 +100,8 @@
             .show();
 
         intNewPlayerCount++;
+
+        ChangesMade();
     }
 
     //Delete player
@@ -114,6 +121,7 @@
     function RemovePlayerRow(btn) {
         $(btn).parent().parent().hide();
         $('.popover').remove();
+        ChangesMade();
     }
 
     //Undo changes made
@@ -141,6 +149,7 @@
             $(inpt).blur().focus();
             var tmp = $(inpt).val();
             $(inpt).val('').val(tmp);
+            ChangesMade();
         }
     }
 
