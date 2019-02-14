@@ -101,7 +101,7 @@
 
         intNewPlayerCount++;
 
-        ChangesMade();
+        SetIsDirty(true);
     }
 
     //Delete player
@@ -121,7 +121,7 @@
     function RemovePlayerRow(btn) {
         $(btn).parent().parent().hide();
         $('.popover').remove();
-        ChangesMade();
+        SetIsDirty(true);
     }
 
     //Undo changes made
@@ -149,11 +149,13 @@
             $(inpt).blur().focus();
             var tmp = $(inpt).val();
             $(inpt).val('').val(tmp);
-            ChangesMade();
+            SetIsDirty(true);
         }
     }
 
-    function UpdatePlayer() {
+    function UpdatePlayer(btn) {
+        btn = btn || "";
+
         var jsonData = [];
         var playerId;
 
@@ -206,7 +208,12 @@
                 url: "/Player/UpdatePlayerData",
                 data: { players: JSON.stringify(jsonData) },
                 complete: function (data) {
-                    location.reload();
+                    SetIsDirty(false);
+                    if (btn != "") {
+                        $(btn).click();
+                        location.href = $(btn).attr('href');
+                    }
+                    else location.reload();
                 }
             });
         }
