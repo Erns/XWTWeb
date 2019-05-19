@@ -35,8 +35,7 @@
                     <tbody>
                         @foreach (XWTWeb.Models.TournamentMain tournament in Model)
                         {
-                            if (tournament.StartDate >= DateTime.Today)
-                            {
+                            
                                 <tr id="tournamentMainTableRow_@tournament.Id" data-tournamentid="@tournament.Id" style="cursor:pointer;" onclick="BBoxLoading(); location.href = '@(Url.Action("TournamentActivityMain", "TournamentActivity", new { id = tournament.Id }))'">
                                     <td>@tournament.Name</td>
                                     <td>@tournament.StartDate.Value.ToString("MM/dd/yyyy")</td>
@@ -45,7 +44,7 @@
                                         @Html.ActionLink(" ", "TournamentAddEdit", "Tournament", routeValues: new { id = tournament.Id }, htmlAttributes: new { @style = "font-weight:bold", @class = "btn btn-info fas fa-cogs m-1 p-2" })
                                     </td>
                                 </tr>
-                            }
+
                         }
                     </tbody>
                 </table>
@@ -85,27 +84,27 @@
 </form>
 
 <script type="text/javascript">
-    $(document).ready(function () {
-        SetCurrentPage("TournamentMain");
+    //$(document).ready(function () {
+    //    SetCurrentPage("TournamentMain");
 
-        $("#tournamentMainCurrentTable").DataTable({
-            "columns": [
-                { "type": "string" },
-                { "type": "string" },
-                null
-            ]
-        });
+    //    $("#tournamentMainCurrentTable").DataTable({
+    //        "columns": [
+    //            { "type": "string" },
+    //            { "type": "string" },
+    //            null
+    //        ]
+    //    });
 
-        $("#tournamentMainPastTable").DataTable({
-            "columns": [
-                { "type": "string" },
-                { "type": "string" },
-                null
-            ]
-        });
+    //    $("#tournamentMainPastTable").DataTable({
+    //        "columns": [
+    //            { "type": "string" },
+    //            { "type": "string" },
+    //            null
+    //        ]
+    //    });
 
-        $(".dataTables_wrapper").css("width", "100%");
-    });
+    //    $(".dataTables_wrapper").css("width", "100%");
+    //});
 
     function DeleteTournament(e, strName, intId) {
         e.stopPropagation();

@@ -6,10 +6,23 @@
     <title>XWing Tournament Web</title>
     @Styles.Render("~/Content/css")
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-    @Scripts.Render("~/bundles/modernizr")
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+
+    <!-- Load required Bootstrap and BootstrapVue CSS -->
+    <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
+
+    <!-- Load polyfills to support older browsers -->
+    <script src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CMutationObserver" crossorigin="anonymous"></script>
+
+    <!-- Load Vue followed by BootstrapVue -->
+    <script src="//unpkg.com/vue@latest/dist/vue.min.js"></script>
+    <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+
+    @*<script src="~/Scripts/bootbox.min.js"></script>*@
+    <script src="~/Scripts/utilities.js"></script>
+
     @RenderSection("scripts", required: false)
 
 </head>
@@ -54,10 +67,10 @@
         var _isDirty = false;
         var _currentPage = "";
 
-        $(document).ready(function () {
-            SetIsDirty(false);
-            $('[data-toggle="tooltip"]').tooltip();
-        });
+        //$(document).ready(function () {
+        //    SetIsDirty(false);
+        //    $('[data-toggle="tooltip"]').tooltip();
+        //});
 
         function LogoutOnClick() {
             $.ajax({
