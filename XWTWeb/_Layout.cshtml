@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XWing Tournament Web</title>
+    @Styles.Render("~/Content/css")
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+
+    <!-- Load required Bootstrap and BootstrapVue CSS -->
+    <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
+
+    <!-- Load polyfills to support older browsers -->
+    <script src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CMutationObserver" crossorigin="anonymous"></script>
+
+    <!-- Load Vue followed by BootstrapVue -->
+    <script src="//unpkg.com/vue@latest/dist/vue.min.js"></script>
+    <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+
+    @*<script src="~/Scripts/bootbox.min.js"></script>*@
+    <script src="~/Scripts/utilities.js"></script>
+
+    @RenderSection("scripts", required: false)
+
+</head>
+<body class="pt-0 bg-light">
+    <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <div class="row">
+                <button type="button" class="navbar-toggler mr-2" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div onclick="BBoxLoading();">
+                    @Html.ActionLink("  XWing Tournament", "PlayerMain", "Player", new { area = "" }, new { @onclick = "ConfirmChangesMade(event, this);", @class = "navbar-brand align-self-center fab fa-phoenix-squadron" })
+                </div>
+
+            </div>
+
+            @if (System.Web.HttpContext.Current.User.Identity.IsAuthenticated) { 
+                <div class="navbar-collapse collapse pl-3">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item" onclick="BBoxLoading();">@Html.ActionLink("Players", "PlayerMain", "Player", new { area = "" }, new { @onclick = "ConfirmChangesMade(event, this);", @class = "nav-link" })</li>
+                        <li class="nav-item" onclick="BBoxLoading();">@Html.ActionLink("Tournaments", "TournamentMain", "Tournament", new { area = "" }, new { @onclick = "ConfirmChangesMade(event, this);", @class = "nav-link" })</li>
+                    </ul>
+                </div>
+
+                <div class="p-2 col d-flex justify-content-end align-content-start">
+                    <button type="button" title="Logoff" class="btn btn-secondary fas fa-sign-out-alt" onclick="LogoutOnClick();"></button>
+                </div>
+            }
+        </div>
+    </nav>
+    <div class="container-fluid body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - XWing Tournament Web</p>
+            <p>This tool is unofficial and is not affiliated with Fantasy Flight Games, Lucasfilm Ltd., or Disney.</p>
+        </footer>
+    </div>
+
+
+    <script type="text/javascript">
+        var _isDirty = false;
+        var _currentPage = "";
+
+        //$(document).ready(function () {
+        //    SetIsDirty(false);
+        //    $('[data-toggle="tooltip"]').tooltip();
+        //});
+
+        function LogoutOnClick() {
+            //$.ajax({
+            //    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            //    dataType: "json",
+            //    type: "POST",
+            //    url: "/Account/Logout",
+            //    complete: function (data) {
+            //        location.reload();
+            //    }
+            //});
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/Account/Logout');
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-');
+            xhr.onload = function () {
+                var test = xhr;
+                debugger;
+
+                location.reload();
+            };
+            xhr.send();
+
+        }
+
+        function IsDirty() {
+            return _isDirty;
+        }
+
+        function SetIsDirty(blnDirty) {
+            _isDirty = blnDirty;
+        }
+
+        function SetCurrentPage(strPage) {
+            _currentPage = strPage;
+        }
+
+        function GetCurrentPage() {
+            return _currentPage;
+        }
+
+        function ConfirmChangesMade(e, btn) {
+            switch (GetCurrentPage()) {
+                case "PlayerMain":
+                    if (IsDirty()) {
+                        bootbox.confirm({
+                            size: "small",
+                            message: "Would you like to save changes made to this page?",
+                            callback: function (result) {
+                                if (result) {
+                                    UpdatePlayer(btn);
+                                }
+
+                            }
+                        });
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+
+                    break;
+            }
+        }
+
+    </script>
+</body>
+</html>
