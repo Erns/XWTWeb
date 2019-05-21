@@ -73,15 +73,26 @@
         //});
 
         function LogoutOnClick() {
-            $.ajax({
-                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-                dataType: "json",
-                type: "POST",
-                url: "/Account/Logout",
-                complete: function (data) {
-                    location.reload();
-                }
-            });
+            //$.ajax({
+            //    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            //    dataType: "json",
+            //    type: "POST",
+            //    url: "/Account/Logout",
+            //    complete: function (data) {
+            //        location.reload();
+            //    }
+            //});
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/Account/Logout');
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-');
+            xhr.onload = function () {
+                var test = xhr;
+                debugger;
+
+                location.reload();
+            };
+            xhr.send();
         }
 
         function IsDirty() {
