@@ -4,7 +4,7 @@
 }
 
 
-<form>
+<form id="main">
 
     <div class="container pb-2 bg-white">
         <div class="row sticky-top sticky-offset bg-light border-bottom border-secondary">
@@ -64,30 +64,36 @@
 
 <script type="text/javascript">
 
-    $(document).ready(function () {
-        SetCurrentPage("PlayerMain");
 
-        /* Create an array with the values of all the input boxes in a column */
-        $.fn.dataTable.ext.order['dom-text'] = function (settings, col) {
-            return this.api().column(col, { order: 'index' }).nodes().map(function (td, i) {
-                return $('input', td).val();
-            });
+    var vm = new Vue({
+        el: '#main',
+        mounted: function () {
+            debugger
+
+            SetCurrentPage("PlayerMain");
+
+            ///* Create an array with the values of all the input boxes in a column */
+            //$.fn.dataTable.ext.order['dom-text'] = function (settings, col) {
+            //    return this.api().column(col, { order: 'index' }).nodes().map(function (td, i) {
+            //        return $('input', td).val();
+            //    });
+            //}
+
+            //$("#playerMainTable").DataTable({
+            //    "columns": [
+            //        { "orderDataType": "dom-text", type: 'string' },
+            //        { "orderDataType": "dom-text", type: 'string' },
+            //        { "orderDataType": "dom-text", type: 'string' },
+            //        null
+            //    ]
+            //});
+            //$(".dataTables_wrapper").css("width", "100%");
+            //$("#playerMainTable_length").addClass("pl-md-4");
+            //$("#playerMainTable_filter").addClass("pr-md-4");
+
+            //window.addEventListener('beforeunload', function (e) { confirmNavigation(e); });
         }
 
-        $("#playerMainTable").DataTable({
-            "columns": [
-                { "orderDataType": "dom-text", type: 'string' },
-                { "orderDataType": "dom-text", type: 'string' },
-                { "orderDataType": "dom-text", type: 'string' },
-                null
-            ]
-        } );
-        $(".dataTables_wrapper").css("width", "100%");
-        $("#playerMainTable_length").addClass("pl-md-4");
-        $("#playerMainTable_filter").addClass("pr-md-4");
-
-        //window.addEventListener('beforeunload', function (e) { confirmNavigation(e); });
-       
     });
 
     //Add new player row
