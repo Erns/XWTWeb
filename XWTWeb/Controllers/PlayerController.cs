@@ -48,7 +48,35 @@ namespace XWTWeb.Controllers
             return View(players.ToList());
         }
 
+        [Authorize]
+        public string GetPlayerData()
+        {
+            List<Player> players = new List<Player>();
+            string content = "";
 
+            try
+            {
+
+                var request = new RestRequest("Players/{userid}", Method.GET);
+                request.AddUrlSegment("userid", Utilities.CurrentUser.Id);
+
+                // execute the request
+                IRestResponse response = client.Execute(request);
+                content = response.Content;
+
+                List<Player> result = JsonConvert.DeserializeObject<List<Player>>(JsonConvert.DeserializeObject(content).ToString());
+                foreach (Player player in result)
+                {
+                    players.Add(player);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Write(string.Format("PlayerController.GetPlayerData{0}Error:{1}", Environment.NewLine, ex.Message));
+            }
+
+            return JsonConvert.SerializeObject(players);
+        }
         public void UpdatePlayerData(string players)
         {
             List<Player> result = JsonConvert.DeserializeObject<List<Player>>(players);

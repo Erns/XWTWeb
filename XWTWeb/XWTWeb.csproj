@@ -219,6 +219,8 @@
     <Content Include="Content\FontAwesome\webfonts\fa-solid-900.woff2" />
     <Content Include="Scripts\bootbox.min.js" />
     <Content Include="Scripts\bootstrap-vue.min.js" />
+    <Content Include="Scripts\Player\PlayerMain.js" />
+    <Content Include="Scripts\Player\PlayerMainComp.js" />
     <Content Include="Scripts\popper.js" />
     <Content Include="Scripts\vue.min.js" />
     <Content Include="Web.config" />

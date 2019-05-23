@@ -7,7 +7,6 @@
     @Styles.Render("~/Content/css")
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
 
     <!-- Load required Bootstrap and BootstrapVue CSS -->
     <link type="text/css" rel="stylesheet" href="~/Content/bootstrap.css" />
@@ -17,10 +16,11 @@
     @*<script src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CMutationObserver" crossorigin="anonymous"></script>*@
 
     <!-- Load Vue followed by BootstrapVue -->
-    <script src="~/Scripts/vue.min.js"></script>
+    @*<script src="~/Scripts/vue.min.js"></script>*@
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
     <script src="~/Scripts/bootstrap-vue.min.js"></script>
 
-    <script src="~/Scripts/bootbox.min.js"></script>
+    @*<script src="~/Scripts/bootbox.min.js"></script>*@
     <script src="~/Scripts/utilities.js"></script>
     <script src="~/Scripts/popper.js"></script>
 
@@ -54,8 +54,11 @@
             }
         </div>
     </nav>
+
     <div class="container-fluid body-content">
+
         @RenderBody()
+
         <hr />
         <footer>
             <p>&copy; @DateTime.Now.Year - XWing Tournament Web</p>
@@ -88,9 +91,6 @@
             xhr.open('POST', '/Account/Logout');
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-');
             xhr.onload = function () {
-                var test = xhr;
-                debugger;
-
                 location.reload();
             };
             xhr.send();
