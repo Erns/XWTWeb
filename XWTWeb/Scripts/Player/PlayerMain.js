@@ -32,7 +32,17 @@ function AddNewPlayer() {
     //    .show();
 
     //intNewPlayerCount++;
-    debugger
+    var player = {
+        Id: 0,
+        Name: '',
+        Email: '',
+        Group: '',
+        Active: true,
+        DateDeleted: null,
+        CanEdit: true
+    };
+
+    app.items.unshift(player);
     SetIsDirty(true);
 }
 
