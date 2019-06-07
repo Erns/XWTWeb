@@ -1,4 +1,4 @@
-﻿const app = new Vue({
+const app = new Vue({
     el: '#mainDiv',
     data: {
         items: [{ Id: 1, Name: 'Test 1' }, { Id: 2, Name: 'Test 2' }]
@@ -18,22 +18,17 @@
 
 function callback(responseText) {
     app.items = JSON.parse(responseText);
-    debugger
 }
 
 
 //Add new player row
 var intNewPlayerCount = 0;
 function AddNewPlayer() {
-    //var rowTemplate = $("#playerMainTableRowTemplate").clone();
-
-    //rowTemplate.attr('id', 'newPlayerRow_' + intNewPlayerCount)
-    //    .prependTo($("#playerMainTable tbody"))
-    //    .show();
+    intNewPlayerCount++;
 
     //intNewPlayerCount++;
     var player = {
-        Id: 0,
+        Id: intNewPlayerCount * -1,
         Name: '',
         Email: '',
         Group: '',
@@ -46,53 +41,30 @@ function AddNewPlayer() {
     SetIsDirty(true);
 }
 
-//Delete player
-function RemovePrompt(btn) {
-    bootbox.confirm({
-        size: "small",
-        message: "Are you sure you want to remove this player?",
-        callback: function (result) {
-            if (result) {
-                RemovePlayerRow(btn);
+function UpdatePlayer(btn) {
+    btn = btn || "";
+
+    if (CheckRequiredFields()) {
+
+        var data = JSON.stringify(app.items);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/Player/UpdatePlayerData');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onload = function () {
+            if (xhr.readyState == 4) {
+                SetIsDirty(false);
+                if (btn != "") {
+                    $(btn).click();
+                    location.href = $(btn).attr('href');
+                }
+                else location.reload();
             }
-        }
-    });
-}
-
-//Delete player Row
-function RemovePlayerRow(btn) {
-    $(btn).parent().parent().hide();
-    $('.popover').remove();
-    SetIsDirty(true);
-}
-
-//Undo changes made
-function UndoPrompt(Id) {
-    bootbox.confirm({
-        size: "small",
-        message: "Do you want to undo changes to this player?",
-        callback: function (result) {
-            if (result) {
-                $("#playerMainTableRow_" + Id + " td input").each(function () {
-                    $(this).val($(this).data('originalvalue'));
-                    $(this).prop('readonly', true);
-                    $(this).parent().parent().prop('readonly', true).attr('readonly', true);
-                });
-            }
-        }
-    });
-}
-
-//Unlock field to edit
-function UnlockInput(inpt) {
-    if ($(inpt).prop('readonly')) {
-        $(inpt).prop('readonly', false);
-        $(inpt).parent().parent().prop('readonly', false).attr('readonly', false);
-        $(inpt).blur().focus();
-        var tmp = $(inpt).val();
-        $(inpt).val('').val(tmp);
-        SetIsDirty(true);
+        };
+        xhr.send(data);
     }
+
+
 }
 
         //function UpdatePlayer(btn) {
