@@ -79,6 +79,7 @@ namespace XWTWeb.Controllers
             return JsonConvert.SerializeObject(players);
         }
 
+        [Authorize]
         public void UpdatePlayerData()
         {
 
