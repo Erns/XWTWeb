@@ -1,17 +1,17 @@
-﻿//Various utility functions
+//Various utility functions
 
 function CheckRequiredFields() {
     var blnCheckRequiredFields = true;
-    $("input.required").each(function () {
-        $(this).removeClass('is-invalid');
-        if ($(this).val().trim() == "" && $(this).is(':visible')) {
-            $(this).addClass('is-invalid');
-            $(this).data('placement', 'bottom');
-            $(this).data('content', 'This is a required field.');
-            $(this).popover('show');
-            blnCheckRequiredFields = false;
-        }
-    });
+    //$("input.required").each(function () {
+    //    $(this).removeClass('is-invalid');
+    //    if ($(this).val().trim() == "" && $(this).is(':visible')) {
+    //        $(this).addClass('is-invalid');
+    //        $(this).data('placement', 'bottom');
+    //        $(this).data('content', 'This is a required field.');
+    //        $(this).popover('show');
+    //        blnCheckRequiredFields = false;
+    //    }
+    //});
     return blnCheckRequiredFields;
 }
 
@@ -42,4 +42,28 @@ function IsEmail(strEmail) {
     var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 
     return filter.test(strEmail);
+}
+
+function msgConfirm(bvModal, title, msg, func) {
+    func = func || "";
+
+    bvModal
+        .msgBoxConfirm(msg,
+            {
+                title: title,
+                size: 'sm',
+                buttonSize: 'sm',
+                okVariant: 'danger',
+                headerClass: 'p-2 border-bottom-0',
+                footerClass: 'p-2 border-top-0',
+                centered: true
+            })
+        .then(value => {
+            if (value && func !== "") {
+                func();
+            }
+        })
+        .catch(err => {
+            // An error occurred
+        });
 }
