@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Authenticators;
 using System;
@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -77,22 +78,40 @@ namespace XWTWeb.Controllers
 
             return JsonConvert.SerializeObject(players);
         }
-        public void UpdatePlayerData(string players)
+
+        public void UpdatePlayerData()
         {
-            List<Player> result = JsonConvert.DeserializeObject<List<Player>>(players);
 
             try
             {
 
-                // client.Authenticator = new HttpBasicAuthenticator(username, password);
+                using (Stream stream = Request.InputStream)
+                {
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        var players = reader.ReadToEnd();
+                        List<Player> result = JsonConvert.DeserializeObject<List<Player>>(players);
 
-                var request = new RestRequest("Players/{userid}", Method.PUT);
-                request.AddUrlSegment("userid", Utilities.CurrentUser.Id);
-                request.AddJsonBody(JsonConvert.SerializeObject(result));
+                        foreach(Player player in result)
+                        {
+                            if (player.Id < 0)
+                                player.Id = 0;
 
-                // execute the request
-                IRestResponse response = client.Execute(request);
-                var content = response.Content; // raw content as string
+                        }
+
+                        //client.Authenticator = new HttpBasicAuthenticator(username, password);
+
+                        var request = new RestRequest("Players/{userid}", Method.PUT);
+                        request.AddUrlSegment("userid", Utilities.CurrentUser.Id);
+                        request.AddJsonBody(JsonConvert.SerializeObject(result));
+
+                        // execute the request
+                        IRestResponse response = client.Execute(request);
+                        var content = response.Content; // raw content as string
+                    }
+                }
+
+
 
             }
             catch (Exception ex)
